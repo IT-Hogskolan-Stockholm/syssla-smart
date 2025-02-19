@@ -164,5 +164,17 @@ export const useChoreStore = defineStore('choreStore', () => {
       pointValue: 1
     }
   ])
-  return { chores }
+
+
+  const dialog = ref(false)
+
+  const openDialog = () => {
+    dialog.value = true;
+  }
+
+  const closeDialog = () => {
+    dialog.value = false;
+  }
+
+  return { chores, dialog, openDialog, closeDialog }
 })
