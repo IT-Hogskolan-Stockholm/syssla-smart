@@ -26,8 +26,8 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  width: 100vw;
 }
 
 h1 {
@@ -64,6 +64,7 @@ button:focus-visible {
   padding: 2rem;
   padding-top: 5rem; /* marginal så inget hamnar under headern i början */
   text-align: center;
+  width: 100vw;
 }
 
 @media (prefers-color-scheme: light) {
