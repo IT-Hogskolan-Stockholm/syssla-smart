@@ -3,7 +3,7 @@
     <h1>Sysslor</h1>
     <p>Lista över sysslor...</p>
       <div class="create-chore">
-        <v-btn @click="openDialog" color="primary" max-width="400px">Skapa Syssla</v-btn>
+        <v-btn @click="openDialog" color="primary" max-width="400px">Ny Syssla</v-btn>
 
         <v-dialog v-model="dialog" max-width="400px">
         <v-card>
@@ -20,11 +20,13 @@
 </template>
 
 <script setup>
-  import { ref } from "vue";
+  import { computed, ref } from "vue";
   import {useChoreStore} from "../stores/ChoreStore";
 
   const store = useChoreStore();
-  const { dialog, openDialog, closeDialog } = store;
+  const dialog = computed(() => store.dialog);
+  const openDialog = store.openDialog;
+  const closeDialog = store.closeDialog;
   const choreName = ref("");
 
 </script>
