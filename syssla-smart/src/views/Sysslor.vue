@@ -11,7 +11,7 @@
           <span class="black-text">Ny Syssla</span>
           <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
         </v-btn>
-
+        <!-- dialog section-->
         <v-dialog v-model="dialog" max-width="400px">
         <v-card>
           <v-card-text>
@@ -38,6 +38,7 @@
           </v-row>
         </v-card-text>
 
+        <!--Lägg till button section-->
           <v-card-actions class="justify-center">
             <v-btn color="green" @click="addChore(choreName, selectedDate); closeDialog()" size="large">
               <span class="black-text green-btn rounded-btn custom-btn">Lägg Till</span>
