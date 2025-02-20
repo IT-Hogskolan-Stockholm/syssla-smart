@@ -39,7 +39,7 @@
         </v-card-text>
 
           <v-card-actions class="justify-center">
-            <v-btn color="green" @click="addChore(choreName); closeDialog()" size="large">
+            <v-btn color="green" @click="addChore(choreName, selectedDate); closeDialog()" size="large">
               <span class="black-text green-btn rounded-btn custom-btn">Lägg Till</span>
             </v-btn>
           </v-card-actions>
@@ -64,7 +64,7 @@
   const menu = ref(false);
 
   const formattedDate = computed(() => {
-    return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : "Choose a date";
+    return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : "Choose a deadline";
   })
 
   const updateDate = (date) => {

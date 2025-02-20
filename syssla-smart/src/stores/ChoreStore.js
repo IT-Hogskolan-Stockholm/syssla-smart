@@ -176,13 +176,13 @@ export const useChoreStore = defineStore('choreStore', () => {
     dialog.value = false;
   }
 
-  const addChore = (choreTitle) => {
+  const addChore = (choreTitle, selectedDate) => {
     if (!choreTitle.trim()) return;
 
     chores.value.push({
       id: chores.value.length + 1,
       title: choreTitle,
-      deadline: "",
+      deadline: selectedDate || "",
       assignedTo: "",
       isCompleted: false,
       pointValue: null
