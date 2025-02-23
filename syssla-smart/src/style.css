@@ -31,7 +31,6 @@ body {
   margin: 0;
   display: flex;
   min-height: 100vh;
-  height: 2000px;
   width: 100vw;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
@@ -53,7 +52,6 @@ h1 {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 

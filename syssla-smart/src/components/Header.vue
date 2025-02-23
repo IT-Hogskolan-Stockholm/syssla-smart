@@ -18,7 +18,7 @@
     background-color: #f1f6ff;
     color: white;
     padding: 10px 20px;
-    max-width: 100%;
+    width: 100%;
     z-index: 10;
     display: flex;
     justify-content: space-between;
@@ -28,7 +28,6 @@
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
       rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
     /* skugga under header */
-    height: 60px;
     position: sticky;
     top: 0;
   }
