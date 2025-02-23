@@ -1,14 +1,21 @@
+
+<script setup>
+import HelloWorld from './components/HelloWorld.vue'
+import Header from './components/Header.vue'
+</script>
+
 <template>
-  <nav>
+  <Header />
+  <div>
+    <nav>
     <router-link to="/sysslor">Sysslor</router-link>
     <router-link to="/beloningar">Belöningar</router-link>
   </nav>
   <router-view />
+  </div>
 </template>
 
-<script setup></script>
-
-<style>
+<style scoped>
   nav {
     display: flex;
     gap: 1rem;
