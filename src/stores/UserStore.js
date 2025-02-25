@@ -5,28 +5,28 @@ export const useUserStore = defineStore('userStore', () => {
   const users = ref([
     {
       id: 1,
-      name: 'MA',
+      name: 'Mamma',
       color: '#F48FB1',
       scoreValue: 1,
       completedTasks: 0
     },
     {
       id: 2,
-      name: 'PA',
+      name: 'Pappa',
       color: '#7CB342',
       scoreValue: 1,
       completedTasks: 0
     },
     {
       id: 3,
-      name: 'AL',
+      name: 'Algot',
       color: '#039BE5',
       scoreValue: 1,
       completedTasks: 0
     },
     {
       id: 4,
-      name: 'SO',
+      name: 'Sofia',
       color: '#EC407A',
       scoreValue: 1,
       completedTasks: 0
