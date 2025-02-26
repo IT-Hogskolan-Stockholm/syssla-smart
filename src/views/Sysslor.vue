@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { useChoreStore } from '../stores/ChoreStore'
   import { useUserStore } from '../stores/UserStore'
 
@@ -16,6 +16,20 @@
 
   const selectedDate = ref(null)
   const menu = ref(false)
+
+  watch(() => store.editingChore, (chore) => {
+    if (chore) {
+      choreName.value = chore.title
+      selectedDate.value = chore.deadline
+    } else {
+      choreName.value = ''
+      selectedDate.value = null
+    }
+  })
+
+  const handleOpenDialog = (chore = null) => {
+    store.openAddChoreDialog(chore)
+  }
 
   const formattedDate = computed(() => {
     return selectedDate.value
@@ -61,7 +75,7 @@
             }"
             >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
-          <v-icon class="black-text" size="36" color="black"
+          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black"
             >mdi-pencil-outline</v-icon
           >
         </div>
@@ -115,7 +129,7 @@
       </v-btn>
       <!-- addChoreDialog section-->
       <v-dialog
-        v-model="addChoreDialog"
+        v-model="store.addChoreDialog"
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"

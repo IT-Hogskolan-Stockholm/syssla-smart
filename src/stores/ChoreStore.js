@@ -48,13 +48,16 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
+  const editingChore = ref(null)
 
-  const openAddChoreDialog = () => {
+  const openAddChoreDialog = (chore = null) => {
+    editingChore.value = chore
     addChoreDialog.value = true
   }
 
   const closeAddChoreDialog = () => {
     addChoreDialog.value = false
+    editingChore.value = null
   }
 
   const openAssignUserDialog = (chore) => {
@@ -69,16 +72,23 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addChore = (choreTitle, selectedDate) => {
     if (!choreTitle.trim()) return
 
-    chores.value.push({
-      id: chores.value.length + 1,
-      title: choreTitle,
-      deadline: selectedDate || '',
-      assignedTo: '',
-      isCompleted: false,
-      pointValue: null
-    })
-
-    addChoreDialog.value = false
+    if (editingChore.value) {
+      const choreIndex = chores.value.findIndex(chore => chore.id === editingChore.value.id)
+      if (choreIndex !== -1) {
+        chores.value[choreIndex].title = choreTitle
+        chores.value[choreIndex].deadline = selectedDate
+      }
+    } else {
+      chores.value.push({
+        id: chores.value.length + 1,
+        title: choreTitle,
+        deadline: selectedDate || '',
+        assignedTo: '',
+        isCompleted: false,
+        pointValue: null
+      })
+    }
+    closeAddChoreDialog()
   }
 
   const addAssignedUser = (user) => {
@@ -94,6 +104,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     openAddChoreDialog,
     closeAddChoreDialog,
     addChore,
+    editingChore,
     openAssignUserDialog,
     closeAssignUserDialog,
     addAssignedUser,
