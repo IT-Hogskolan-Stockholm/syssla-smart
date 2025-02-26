@@ -1,5 +1,5 @@
 <script setup>
-  import Header from './components/Header.vue'
+import Header from './components/Header.vue'
 </script>
 
 <template>
@@ -12,8 +12,9 @@
 </template>
 
 <style scoped>
-  nav {
-    display: flex;
-    gap: 1rem;
-  }
+nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0 2rem 0;
+}
 </style>
