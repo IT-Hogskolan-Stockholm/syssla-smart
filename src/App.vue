@@ -1,5 +1,6 @@
 <script setup>
   import Header from './components/Header.vue'
+  import Sync from './components/Sync.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@
     <router-link to="/beloningar">Belöningar</router-link>
   </nav>
   <router-view />
+<sync />
 </template>
 
 <style scoped>
