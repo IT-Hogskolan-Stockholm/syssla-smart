@@ -1,17 +1,25 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useChoreStore } from '../stores/ChoreStore'
 import { useUserStore } from '../stores/UserStore'
 
-const store = useChoreStore()
 const userStore = useUserStore()
-const addChoreDialog = computed(() => store.addChoreDialog)
-const assignUserDialog = computed(() => store.assignUserDialog)
-const openAddChoreDialog = store.openAddChoreDialog
-const closeAddChoreDialog = store.closeAddChoreDialog
-const openAssignUserDialog = store.openAssignUserDialog
-const addChore = store.addChore
-const addAssignedUser = store.addAssignedUser
+const choreStore = useChoreStore()
+
+const chores = computed(() => choreStore.chores)
+
+const archivedChores = computed(() => choreStore.archivedChores)
+onMounted(() => {
+  console.log("Sysslor i store:", chores.value);
+});
+
+const addChoreDialog = computed(() => choreStore.addChoreDialog)
+const assignUserDialog = computed(() => choreStore.assignUserDialog)
+const openAddChoreDialog = choreStore.openAddChoreDialog
+const closeAddChoreDialog = choreStore.closeAddChoreDialog
+const openAssignUserDialog = choreStore.openAssignUserDialog
+const addChore = choreStore.addChore
+const addAssignedUser = choreStore.addAssignedUser
 
 const choreName = ref('')
 const selectedDate = ref(null)
@@ -34,8 +42,6 @@ const getUserColor = (assignedTo) => {
 }
 
 // *** swipe 
-
-const archivedChores = ref([])
 const swipeProgress = ref({});
 const showUndo = ref({})
 
@@ -51,7 +57,7 @@ const moveSwipe = (chore, event) => {
 
 const endSwipe = (chore) => {
   if (swipeProgress.value[chore.id] > 0.5) {
-    archivedChores.value.push(chore)
+    choreStore.archiveChore(chore);
     showUndo.value[chore.id] = true
     setTimeout(() => {
       showUndo.value[chore.id] = false
@@ -61,7 +67,7 @@ const endSwipe = (chore) => {
 }
 // Undo func
 const undoArchive = (chore) => {
-  archivedChores.value = archivedChores.value.filter((c) => c.id !== chore.id)
+  choreStore.undoArchiveChore(chore);
   showUndo.value[chore.id] = false
 }
 
@@ -72,16 +78,17 @@ const undoArchive = (chore) => {
 
     <!-- Undo btn-->
     <transition-group name="fade" tag="div" class="transition-container">
-      <v-btn v-for="chore in store.chores.filter(c => showUndo[c.id])" :key="'undo-' + chore.id"
+      <v-btn v-for="chore in archivedChores.filter(c => showUndo[c.id])" :key="'undo-' + chore.id"
         @click="undoArchive(chore)" height="70px" color="red-lighten-3"
         class="border-lg border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px">
         Ångra borttagning av "{{ chore.title }}"</v-btn></transition-group>
 
+
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
 
 
-      <v-btn v-for="chore in store.chores.filter(c => !archivedChores.includes(c))" :key="chore.id" :style="{
+      <v-btn v-for="chore in chores" :key="chore.id" :style="{
         transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
         backgroundColor: swipeProgress[chore.id] > 0 ? '#a5d6a7 !important' : '',  // turns green on swipe !important
         maxWidth: '400px'
