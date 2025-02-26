@@ -5,8 +5,14 @@
 
   const store = useChoreStore()
   const userStore = useUserStore()
-  const addChoreDialog = computed(() => store.addChoreDialog)
-  const assignUserDialog = computed(() => store.assignUserDialog)
+  const addChoreDialog = computed({
+    get: () => store.addChoreDialog,
+    set: (value) => (store.addChoreDialog = value)
+  })
+  const assignUserDialog = computed({
+    get: () => store.assignUserDialog,
+    set: (value) => (store.assignUserDialog = value)
+  })
   const openAddChoreDialog = store.openAddChoreDialog
   const closeAddChoreDialog = store.closeAddChoreDialog
   const openAssignUserDialog = store.openAssignUserDialog
@@ -248,8 +254,6 @@
   .deadline-container {
     gap: 0.6rem;
     font-size: 0.8rem;
-  }
-  .icons-container {
   }
   .assignment-brick {
     background-color: #fff;
