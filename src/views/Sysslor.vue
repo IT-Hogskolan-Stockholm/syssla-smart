@@ -5,10 +5,13 @@
 
   const store = useChoreStore()
   const userStore = useUserStore()
-  const dialog = computed(() => store.dialog)
-  const openDialog = store.openDialog
-  const closeDialog = store.closeDialog
+  const addChoreDialog = computed(() => store.addChoreDialog)
+  const assignUserDialog = computed(() => store.assignUserDialog)
+  const openAddChoreDialog = store.openAddChoreDialog
+  const closeAddChoreDialog = store.closeAddChoreDialog
+  const openAssignUserDialog = store.openAssignUserDialog
   const addChore = store.addChore
+  const addAssignedUser = store.addAssignedUser
   const choreName = ref('')
 
   const selectedDate = ref(null)
@@ -51,23 +54,58 @@
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
           <span
+            @click="openAssignUserDialog(chore)"
             class="assignment-brick d-flex justify-center align-center"
             :style="{
               backgroundColor: getUserColor(chore.assignedTo)
             }"
-            >{{ chore.assignedTo || '-' }}</span
+            >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
           <v-icon class="black-text" size="36" color="black"
             >mdi-pencil-outline</v-icon
           >
         </div>
       </v-btn>
+      <v-dialog
+        v-model="assignUserDialog"
+        max-width="400px"
+        :content-class="'auto-height-dialog'"
+        class="assigned-to-dialog d-flex align-center"
+      >
+        <div class="assign-container">
+          <template v-for="(user, index) in userStore.users">
+            <v-card-text
+              v-if="user.name"
+              @click="addAssignedUser(user.name)"
+              class="flex-grow-0"
+              style="overflow: visible"
+              :key="user.id"
+            >
+              <div class="d-flex flex-row justify-center align-center">
+                <span
+                  class="assignment-brick d-flex justify-center align-center mr-6"
+                  :style="{
+                    backgroundColor: getUserColor(user.name)
+                  }"
+                  >{{ user.name.substring(0, 2).toUpperCase() }}</span
+                >
+                <v-card-text class="assigned-name">{{ user.name }}</v-card-text>
+              </div>
+              <hr
+                v-if="
+                  store.chores.filter((c) => c.assignedTo).length - 1 > index
+                "
+              />
+            </v-card-text>
+          </template>
+        </div>
+      </v-dialog>
     </section>
     <section
       class="create-new-section d-flex justify-center flex-column align-center"
     >
       <v-btn
-        @click="openDialog"
+        @click="openAddChoreDialog"
         color="purple-lighten-4"
         class="border-md border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px"
@@ -75,9 +113,9 @@
         <span class="black-text">Ny Syssla</span>
         <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
       </v-btn>
-      <!-- dialog section-->
+      <!-- addChoreDialog section-->
       <v-dialog
-        v-model="dialog"
+        v-model="addChoreDialog"
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
@@ -128,7 +166,7 @@
           <v-card-actions class="justify-center flex-grow-0 mt-5">
             <v-btn
               color="green"
-              @click="addChore(choreName, selectedDate), closeDialog()"
+              @click="addChore(choreName, selectedDate), closeAddChoreDialog"
               size="large"
               class="add-btn"
               block
@@ -159,7 +197,7 @@
   }
 
   .black-text {
-    color: black;
+    color: #000;
     text-transform: none;
     font-weight: 400;
   }
@@ -212,14 +250,32 @@
     font-size: 0.8rem;
   }
   .icons-container {
-    .assignment-brick {
+  }
+  .assignment-brick {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  .assigned-to-dialog {
+    .v-card-text {
+      padding: 0;
+    }
+    hr {
+      color: #000;
+      margin: 0.7rem 0;
+    }
+    .assign-container {
       background-color: #fff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 1rem;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      max-width: 95%;
+      padding: 1rem;
+      .assigned-name {
+        font-size: 1.4rem;
+      }
     }
   }
 </style>
