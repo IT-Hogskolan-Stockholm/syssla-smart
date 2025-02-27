@@ -5,8 +5,14 @@
 
   const store = useChoreStore()
   const userStore = useUserStore()
-  const addChoreDialog = computed(() => store.addChoreDialog)
-  const assignUserDialog = computed(() => store.assignUserDialog)
+  const addChoreDialog = computed({
+    get: () => store.addChoreDialog,
+    set: (value) => (store.addChoreDialog = value)
+  })
+  const assignUserDialog = computed({
+    get: () => store.assignUserDialog,
+    set: (value) => (store.assignUserDialog = value)
+  })
   const openAddChoreDialog = store.openAddChoreDialog
   const closeAddChoreDialog = store.closeAddChoreDialog
   const openAssignUserDialog = store.openAssignUserDialog
@@ -39,8 +45,8 @@
 
   const formattedDate = computed(() => {
     return selectedDate.value
-      ? formatDate(selectedDate.value)
-      : ''
+      ? new Date(selectedDate.value).toLocaleDateString()
+      : 'Välj ett datum'
   })
 
   const updateDate = (date) => {
@@ -172,6 +178,7 @@
                   </template>
                   <v-card>
                     <v-date-picker
+                      :hide-header="true"
                       v-model="selectedDate"
                       @update:modelValue="updateDate"
                       no-title
@@ -186,7 +193,7 @@
           <v-card-actions class="justify-center flex-grow-0 mt-5">
             <v-btn
               color="green"
-              @click="addChore(choreName, selectedDate), closeAddChoreDialog"
+              @click="addChore(choreName, formattedDate), closeAddChoreDialog"
               size="large"
               class="add-btn"
               block
@@ -268,8 +275,6 @@
   .deadline-container {
     gap: 0.6rem;
     font-size: 0.8rem;
-  }
-  .icons-container {
   }
   .assignment-brick {
     background-color: #fff;
