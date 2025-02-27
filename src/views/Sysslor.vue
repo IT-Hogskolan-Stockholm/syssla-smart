@@ -158,8 +158,7 @@
                   </template>
                   <v-card>
                     <v-date-picker
-                      title="Välj ett datum"
-                      header="Valt datum"
+                      hide-header="true"
                       v-model="selectedDate"
                       @update:modelValue="updateDate"
                       no-title
