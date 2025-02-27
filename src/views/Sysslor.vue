@@ -20,7 +20,7 @@
   watch(() => store.editingChore, (chore) => {
     if (chore) {
       choreName.value = chore.title
-      selectedDate.value = chore.deadline
+      selectedDate.value = chore.deadline ? new Date (chore.deadline) : null
     } else {
       choreName.value = ''
       selectedDate.value = null
@@ -31,10 +31,16 @@
     store.openAddChoreDialog(chore)
   }
 
+  const formatDate = (date) => {
+    if (!date) return ''
+    const d = new Date(date)
+    return d.toISOString().split('T')[0]
+  }
+
   const formattedDate = computed(() => {
     return selectedDate.value
-      ? new Date(selectedDate.value).toLocaleDateString()
-      : 'Choose a deadline'
+      ? formatDate(selectedDate.value)
+      : ''
   })
 
   const updateDate = (date) => {
@@ -63,7 +69,7 @@
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
-            <span>{{ chore.deadline }}</span>
+            <span>{{ formatDate(chore.deadline)}}</span>
           </div>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
