@@ -9,9 +9,16 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 
+import { sv } from 'vuetify/locale'
+
 const vuetify = createVuetify({
-    components,
-    directives,
+  components,
+  directives,
+  locale: {
+    locale: 'sv',
+    fallback: 'en',
+    messages: { sv }
+  }
 })
 
 const app = createApp(App)

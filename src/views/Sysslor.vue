@@ -26,7 +26,7 @@
   const formattedDate = computed(() => {
     return selectedDate.value
       ? new Date(selectedDate.value).toLocaleDateString()
-      : 'Choose a deadline'
+      : 'Välj ett datum'
   })
 
   const updateDate = (date) => {
@@ -156,13 +156,12 @@
                       <v-icon color="black">mdi-calendar</v-icon>
                     </v-btn>
                   </template>
-                  <v-card>
-                    <v-date-picker
-                      v-model="selectedDate"
-                      @update:modelValue="updateDate"
-                      no-title
-                    ></v-date-picker>
-                  </v-card>
+                  <v-date-picker
+                    :hide-header="true"
+                    v-model="selectedDate"
+                    @update:modelValue="updateDate"
+                    no-title
+                  ></v-date-picker>
                 </v-menu>
               </div>
             </div>
