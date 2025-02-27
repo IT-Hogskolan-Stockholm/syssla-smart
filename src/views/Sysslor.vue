@@ -158,6 +158,7 @@
                   </template>
                   <v-card>
                     <v-date-picker
+                      :hide-header="true"
                       v-model="selectedDate"
                       @update:modelValue="updateDate"
                       no-title
@@ -172,7 +173,7 @@
           <v-card-actions class="justify-center flex-grow-0 mt-5">
             <v-btn
               color="green"
-              @click="addChore(choreName, selectedDate), closeAddChoreDialog"
+              @click="addChore(choreName, formattedDate), closeAddChoreDialog"
               size="large"
               class="add-btn"
               block
