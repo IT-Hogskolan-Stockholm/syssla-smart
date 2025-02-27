@@ -26,7 +26,7 @@
   const formattedDate = computed(() => {
     return selectedDate.value
       ? new Date(selectedDate.value).toLocaleDateString()
-      : 'Choose a deadline'
+      : 'Välj ett datum'
   })
 
   const updateDate = (date) => {
@@ -158,6 +158,8 @@
                   </template>
                   <v-card>
                     <v-date-picker
+                      title="Välj ett datum"
+                      header="Valt datum"
                       v-model="selectedDate"
                       @update:modelValue="updateDate"
                       no-title
