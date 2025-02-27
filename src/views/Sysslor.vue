@@ -26,7 +26,7 @@
   const formattedDate = computed(() => {
     return selectedDate.value
       ? new Date(selectedDate.value).toLocaleDateString()
-      : 'Choose a deadline'
+      : 'Välj ett datum'
   })
 
   const updateDate = (date) => {
