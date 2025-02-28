@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([
@@ -50,6 +50,12 @@ export const useChoreStore = defineStore('choreStore', () => {
       const dateA = new Date(a.deadline)
       const dateB = new Date(b.deadline)
       return dateA - dateB
+    })
+  })
+
+  const sortedChores = computed(() => {
+    return [...chores.value].sort((a, b) => {
+      return new Date(a.deadline) - new Date(b.deadline)
     })
   })
 
@@ -106,5 +112,6 @@ export const useChoreStore = defineStore('choreStore', () => {
     closeAssignUserDialog,
     addAssignedUser,
     assignUserDialog,
+    sortedChores,
   }
 })
