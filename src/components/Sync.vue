@@ -12,7 +12,7 @@
       return 'Du måste skriva in en Hushållskod'
     },
     (value) => {
-      if (value.toLowerCase() === 'hsh1234') {
+      if (value.toLowerCase() === 'hsh-1234') {
         codeValid.value = true 
         return true
       }
@@ -37,7 +37,7 @@
 <template>
   <v-dialog max-width="500" @update:model-value="resetDialog">
     <template v-slot:activator="{ props: activatorProps }">
-      <v-btn v-bind="activatorProps" color="surface-variant" text="Open Dialog" variant="flat"></v-btn>
+      <v-btn v-bind="activatorProps" color="surface-variant" text="Test knapp för Sync" variant="flat"></v-btn>
     </template>
 
     <template v-slot:default>
