@@ -1,20 +1,20 @@
 <script setup>
-import { ref } from 'vue';
+  import { ref } from 'vue'
 
-const loading = ref(false);
-const synced = ref(false);
+  const loading = ref(false)
+  const synced = ref(false)
 
-const startLoading = () => {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-    synced.value = true;
-  }, 2000);
-};
+  const startLoading = () => {
+    loading.value = true
+    setTimeout(() => {
+      loading.value = false
+      synced.value = true
+    }, 2000)
+  }
 
-const resetDialog = () => {
-  synced.value = false;
-};
+  const resetDialog = () => {
+    synced.value = false
+  }
 </script>
 
 <template>
