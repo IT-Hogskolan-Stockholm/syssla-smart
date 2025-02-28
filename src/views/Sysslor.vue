@@ -199,7 +199,9 @@
               class="add-btn"
               block
             >
-              <span class="black-text rounded-btn">Lägg Till</span>
+              <span class="black-text rounded-btn">
+                {{ store.editingChore ? 'Ändra' : 'Lägg Till' }}
+              </span>
             </v-btn>
           </v-card-actions>
         </v-card>
