@@ -60,6 +60,9 @@ const handleSubmit = async () => {
   if (titleValid && dateValid) {
     addChore(choreName.value, formattedDate.value)
     closeAddChoreDialog()
+    form.value.reset()
+    selectedDate.value = null
+    dateError.value = null
   }
 }
 </script>
