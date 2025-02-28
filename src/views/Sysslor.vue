@@ -34,7 +34,8 @@
   })
 
   const handleOpenDialog = (chore = null) => {
-    store.openAddChoreDialog(chore)
+    store.editingChore = chore
+    store.openAddChoreDialog()
   }
 
   const formatDate = (date) => {
@@ -193,7 +194,7 @@
           <v-card-actions class="justify-center flex-grow-0 mt-5">
             <v-btn
               color="green"
-              @click="addChore(choreName, formattedDate), closeAddChoreDialog"
+              @click="console.log('🟢 Button clicked!'), addChore(choreName, selectedDate)"
               size="large"
               class="add-btn"
               block
