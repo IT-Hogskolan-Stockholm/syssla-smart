@@ -18,6 +18,7 @@
   const openAssignUserDialog = store.openAssignUserDialog
   const addChore = store.addChore
   const addAssignedUser = store.addAssignedUser
+  const assignRandomUser = store.assignRandomUser
   const choreName = ref('')
 
   const selectedDate = ref(null)
@@ -87,7 +88,9 @@
               style="overflow: visible"
               :key="user.id"
             >
-              <div class="d-flex flex-row justify-center align-center">
+              <div
+                class="user-container d-flex flex-row justify-center align-center"
+              >
                 <span
                   class="assignment-brick d-flex justify-center align-center mr-6"
                   :style="{
@@ -97,13 +100,16 @@
                 >
                 <v-card-text class="assigned-name">{{ user.name }}</v-card-text>
               </div>
-              <hr
-                v-if="
-                  store.chores.filter((c) => c.assignedTo).length - 1 > index
-                "
-              />
+              <hr />
             </v-card-text>
           </template>
+          <div
+            class="random-user-container d-flex flex-row"
+            @click="assignRandomUser"
+          >
+            <v-icon size="36">mdi-dice-multiple</v-icon
+            ><span class="assigned-name ml-6">Slumpa användare</span>
+          </div>
         </div>
       </v-dialog>
     </section>
@@ -282,5 +288,9 @@
         font-size: 1.4rem;
       }
     }
+  }
+  .user-container,
+  .random-user-container {
+    cursor: pointer;
   }
 </style>
