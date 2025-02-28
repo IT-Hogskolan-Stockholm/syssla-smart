@@ -48,13 +48,16 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
+  const editingChore = ref(null)
 
   const openAddChoreDialog = () => {
+    console.log("Opening add chore dialog.")
     addChoreDialog.value = true
   }
 
   const closeAddChoreDialog = () => {
     addChoreDialog.value = false
+    editingChore.value = null
   }
 
   const openAssignUserDialog = (chore) => {
@@ -67,18 +70,37 @@ export const useChoreStore = defineStore('choreStore', () => {
   }
 
   const addChore = (choreTitle, selectedDate) => {
-    if (!choreTitle.trim()) return
+    console.log("Adding chore:", choreTitle, "Date:", selectedDate)
+    if (!choreTitle.trim()) {
+      console.warn("Chore title is empty, stopping function.")
+      return
+    } else {
+      console.log("Chore tite is valid:", choreTitle)
+    }
+    if (editingChore.value) {
+      console.log("Editing an existing chore...")
+      const choreIndex = chores.value.findIndex((chore) => chore.id === editingChore.value.id)
+      if (choreIndex !== -1) {
+        chores.value[choreIndex].title = choreTitle
+        chores.value[choreIndex].deadline = selectedDate
+        console.log("Chore updated:", chores.value[choreIndex])
+      }
+    } else {
+      console.log("Adding new chore...")
+      chores.value.push({
+        id: chores.value.length + 1,
+        title: choreTitle,
+        deadline: selectedDate || '',
+        assignedTo: '',
+        isCompleted: false,
+        pointValue: null
+      })
+      console.log("Updated chores list:", chores.value)
+    }
 
-    chores.value.push({
-      id: chores.value.length + 1,
-      title: choreTitle,
-      deadline: selectedDate || '',
-      assignedTo: '',
-      isCompleted: false,
-      pointValue: null
-    })
+    editingChore.value = null
 
-    addChoreDialog.value = false
+    closeAddChoreDialog()
   }
 
   const addAssignedUser = (user) => {
@@ -94,6 +116,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     openAddChoreDialog,
     closeAddChoreDialog,
     addChore,
+    editingChore,
     openAssignUserDialog,
     closeAssignUserDialog,
     addAssignedUser,

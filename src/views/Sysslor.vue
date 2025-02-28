@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { useChoreStore } from '../stores/ChoreStore'
   import { useUserStore } from '../stores/UserStore'
 
@@ -22,6 +22,27 @@
 
   const selectedDate = ref(null)
   const menu = ref(false)
+
+  watch(() => store.editingChore, (chore) => {
+    if (chore) {
+      choreName.value = chore.title
+      selectedDate.value = chore.deadline ? new Date (chore.deadline) : null
+    } else {
+      choreName.value = ''
+      selectedDate.value = null
+    }
+  })
+
+  const handleOpenDialog = (chore = null) => {
+    store.editingChore = chore
+    store.openAddChoreDialog()
+  }
+
+  const formatDate = (date) => {
+    if (!date) return ''
+    const d = new Date(date)
+    return d.toISOString().split('T')[0]
+  }
 
   const formattedDate = computed(() => {
     return selectedDate.value
@@ -55,7 +76,7 @@
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
-            <span>{{ chore.deadline }}</span>
+            <span>{{ formatDate(chore.deadline)}}</span>
           </div>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
@@ -67,7 +88,7 @@
             }"
             >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
-          <v-icon class="black-text" size="36" color="black"
+          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black"
             >mdi-pencil-outline</v-icon
           >
         </div>
@@ -121,7 +142,7 @@
       </v-btn>
       <!-- addChoreDialog section-->
       <v-dialog
-        v-model="addChoreDialog"
+        v-model="store.addChoreDialog"
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
@@ -173,7 +194,7 @@
           <v-card-actions class="justify-center flex-grow-0 mt-5">
             <v-btn
               color="green"
-              @click="addChore(choreName, formattedDate), closeAddChoreDialog"
+              @click="console.log('🟢 Button clicked!'), addChore(choreName, selectedDate)"
               size="large"
               class="add-btn"
               block
