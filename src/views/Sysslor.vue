@@ -19,6 +19,9 @@ const openAssignUserDialog = store.openAssignUserDialog
 const addChore = store.addChore
 const addAssignedUser = store.addAssignedUser
 const choreName = ref('')
+const form = ref(null)
+const dateError = ref(null)
+const validateDate = ref(false)
 
 const selectedDate = ref(null)
 const menu = ref(false)
@@ -30,11 +33,34 @@ const formattedDate = computed(() => {
 const updateDate = (date) => {
   selectedDate.value = date
   menu.value = false
+  dateError.value = null
+  validateDate.value = false
 }
 
 const getUserColor = (assignedTo) => {
   const user = userStore.users.find((user) => user.name === assignedTo)
   return user ? user.color : '#FFF'
+}
+
+const rules = {
+  required: (value) => !!value || 'Du måste ange en titel',
+}
+
+const handleSubmit = async () => {
+  validateDate.value = true
+  dateError.value = null
+
+  const { valid: titleValid } = await form.value.validate()
+
+  const dateValid = !!selectedDate.value
+  if (!dateValid) {
+    dateError.value = 'Du måste välja ett datum'
+  }
+
+  if (titleValid && dateValid) {
+    addChore(choreName.value, formattedDate.value)
+    closeAddChoreDialog()
+  }
 }
 </script>
 
@@ -44,7 +70,7 @@ const getUserColor = (assignedTo) => {
       <v-btn
         v-for="chore in store.sortedChores"
         color="blue-lighten-4"
-        class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        class="border-md border-blue rounded-btn black-text custom-btn chores-button d-flex justify-space-between align-center"
         max-width="400px"
       >
         <div class="chore-info-container d-flex flex-column align-start">
@@ -115,54 +141,64 @@ const getUserColor = (assignedTo) => {
         class="d-flex align-start"
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
-          <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
-            <v-text-field v-model="choreName" placeholder="Titel"></v-text-field>
+          <v-form ref="form">
+            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-text-field
+                v-model="choreName"
+                placeholder="Titel"
+                :rules="[rules.required]"
+              ></v-text-field>
 
-            <!-- Date Picker -->
-            <div class="d-flex justify-space-between align-center mt-4">
-              <div class="flex-grow">
-                <span>{{ formattedDate }}</span>
+              <!-- Date Picker -->
+              <div class="d-flex justify-space-between align-center mt-4">
+                <div class="flex-grow">
+                  <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
+                </div>
+                <div>
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    :attach="true"
+                    content-class="date-picker-popup"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn v-bind="attrs" @click="menu = true" icon>
+                        <v-icon color="black">mdi-calendar</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-date-picker
+                        :hide-header="true"
+                        v-model="selectedDate"
+                        @update:modelValue="updateDate"
+                        no-title
+                      ></v-date-picker>
+                    </v-card>
+                  </v-menu>
+                </div>
               </div>
-
-              <div>
-                <v-menu
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  :attach="true"
-                  content-class="date-picker-popup"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" @click="menu = true" icon>
-                      <v-icon color="black">mdi-calendar</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-date-picker
-                      :hide-header="true"
-                      v-model="selectedDate"
-                      @update:modelValue="updateDate"
-                      no-title
-                    ></v-date-picker>
-                  </v-card>
-                </v-menu>
+              <div class="v-messages error--text" role="alert">
+                <div class="v-messages__wrapper">
+                  <div class="v-messages__message">{{ dateError }}</div>
+                </div>
               </div>
-            </div>
-          </v-card-text>
+            </v-card-text>
 
-          <!--Lägg till button section-->
-          <v-card-actions class="justify-center flex-grow-0 mt-5">
-            <v-btn
-              color="green"
-              @click="(addChore(choreName, formattedDate), closeAddChoreDialog)"
-              size="large"
-              class="add-btn"
-              block
-            >
-              <span class="black-text rounded-btn">Lägg Till</span>
-            </v-btn>
-          </v-card-actions>
+            <!--Lägg till button section-->
+            <v-card-actions class="justify-center flex-grow-0 mt-5">
+              <v-btn
+                color="green"
+                @click="handleSubmit(choreName, formattedDate)"
+                size="large"
+                class="add-btn"
+                block
+              >
+                <span class="black-text rounded-btn">Lägg Till</span>
+              </v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-dialog>
     </section>
@@ -216,6 +252,10 @@ const getUserColor = (assignedTo) => {
   font-size: 1.1rem;
 }
 
+.chores-button {
+  cursor: unset;
+}
+
 .border-purple {
   color: #6a1b9a;
 }
@@ -264,5 +304,11 @@ const getUserColor = (assignedTo) => {
       font-size: 1.4rem;
     }
   }
+}
+.v-messages__message {
+  color: #b00020;
+}
+.v-messages {
+  opacity: unset;
 }
 </style>

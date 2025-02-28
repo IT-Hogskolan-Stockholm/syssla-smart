@@ -45,14 +45,6 @@ export const useChoreStore = defineStore('choreStore', () => {
     },
   ])
 
-  onMounted(() => {
-    chores.value.sort((a, b) => {
-      const dateA = new Date(a.deadline)
-      const dateB = new Date(b.deadline)
-      return dateA - dateB
-    })
-  })
-
   const sortedChores = computed(() => {
     return [...chores.value].sort((a, b) => {
       return new Date(a.deadline) - new Date(b.deadline)
