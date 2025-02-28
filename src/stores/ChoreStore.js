@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed } from 'vue'
+import { useUserStore } from '../stores/UserStore'
 
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([
@@ -54,6 +55,7 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
+  const userStore = useUserStore()
 
   const openAddChoreDialog = () => {
     addChoreDialog.value = true
@@ -94,6 +96,16 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
     assignUserDialog.value = false
   }
+
+  const assignRandomUser = () => {
+    const validUsers = userStore.users.filter((user) => user.name)
+
+    const randomIndex = Math.floor(Math.random() * validUsers.length)
+    const randomUser = validUsers[randomIndex]
+
+    addAssignedUser(randomUser.name)
+  }
+
   return {
     chores,
     addChoreDialog,
@@ -105,5 +117,6 @@ export const useChoreStore = defineStore('choreStore', () => {
     addAssignedUser,
     assignUserDialog,
     sortedChores,
+    assignRandomUser
   }
 })

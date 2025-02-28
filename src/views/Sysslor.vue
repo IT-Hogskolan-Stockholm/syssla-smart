@@ -22,6 +22,8 @@ const choreName = ref('')
 const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
+  const assignRandomUser = store.assignRandomUser
+
 
 const selectedDate = ref(null)
 const menu = ref(false)
@@ -110,7 +112,9 @@ const handleSubmit = async () => {
               style="overflow: visible"
               :key="user.id"
             >
-              <div class="d-flex flex-row justify-center align-center">
+              <div
+                class="user-container d-flex flex-row justify-center align-center"
+              >
                 <span
                   class="assignment-brick d-flex justify-center align-center mr-6"
                   :style="{
@@ -120,9 +124,16 @@ const handleSubmit = async () => {
                 >
                 <v-card-text class="assigned-name">{{ user.name }}</v-card-text>
               </div>
-              <hr v-if="store.sortedChores.filter((c) => c.assignedTo).length - 1 > index" />
+              <hr />
             </v-card-text>
           </template>
+          <div
+            class="random-user-container d-flex flex-row"
+            @click="assignRandomUser"
+          >
+            <v-icon size="36">mdi-dice-multiple</v-icon
+            ><span class="assigned-name ml-6">Slumpa användare</span>
+          </div>
         </div>
       </v-dialog>
     </section>
@@ -314,4 +325,8 @@ const handleSubmit = async () => {
 .v-messages {
   opacity: unset;
 }
+  .user-container,
+  .random-user-container {
+    cursor: pointer;
+  }
 </style>
