@@ -5,17 +5,8 @@
 
 <template>
   <Header />
-  <nav>
-    <router-link to="/sysslor">Sysslor</router-link>
-    <router-link to="/beloningar">Belöningar</router-link>
-  </nav>
   <router-view />
 <sync />
 </template>
 
-<style scoped>
-  nav {
-    display: flex;
-    gap: 1rem;
-  }
-</style>
+<style scoped></style>
