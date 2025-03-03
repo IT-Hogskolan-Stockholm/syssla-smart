@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { useChoreStore } from '../stores/ChoreStore'
 import { useUserStore } from '../stores/UserStore'
 
@@ -23,6 +23,10 @@ const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
 const assignRandomUser = store.assignRandomUser
+
+onMounted(async () => {
+  await userStore.fetchUsers() // Vänta på att användarna ska hämtas
+})
 
 watch(
   () => store.editingChore,

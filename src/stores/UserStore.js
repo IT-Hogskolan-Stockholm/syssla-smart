@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('userStore', () => {
   const users = ref([])
@@ -20,6 +20,6 @@ export const useUserStore = defineStore('userStore', () => {
       chore.assignedTo = userName
     }
   }
-
+  const getUsers = computed(() => users.value)
   return { users, fetchUsers, assignUser }
 })

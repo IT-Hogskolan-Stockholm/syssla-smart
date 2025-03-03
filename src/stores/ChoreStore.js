@@ -36,19 +36,39 @@ export const useChoreStore = defineStore('choreStore', () => {
     addChoreDialog.value = false
   }
 
+  const openAddChoreDialog = () => {
+    addChoreDialog.value = true
+  }
+
   const openAssignUserDialog = (chore) => {
     editingChore.value = chore
     assignUserDialog.value = true
+  }
+  const addAssignedUser = (user) => {
+    console.log('selectedChoreId:', selectedChoreId.value)
+    console.log('chores:', chores.value)
+    console.log('user:', user)
+
+    const index = chores.value.findIndex((c) => c.id === selectedChoreId.value)
+    if (index !== -1) {
+      chores.value[index].assignedTo = user
+    } else {
+      console.error('Sysslan med id', selectedChoreId.value, 'hittades inte')
+    }
+
+    assignUserDialog.value = false
   }
 
   return {
     chores,
     addChoreDialog,
+    openAddChoreDialog,
     assignUserDialog,
     editingChore,
     fetchChores,
     sortedChores,
     addChore,
-    openAssignUserDialog
+    openAssignUserDialog,
+    addAssignedUser
   }
 })
