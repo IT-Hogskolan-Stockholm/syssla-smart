@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useChoreStore } from '../stores/ChoreStore'
 import { useUserStore } from '../stores/UserStore'
 
@@ -7,11 +7,11 @@ const store = useChoreStore()
 const userStore = useUserStore()
 const addChoreDialog = computed({
   get: () => store.addChoreDialog,
-  set: (value) => (store.addChoreDialog = value),
+  set: (value) => (store.addChoreDialog = value)
 })
 const assignUserDialog = computed({
   get: () => store.assignUserDialog,
-  set: (value) => (store.assignUserDialog = value),
+  set: (value) => (store.assignUserDialog = value)
 })
 const openAddChoreDialog = store.openAddChoreDialog
 const closeAddChoreDialog = store.closeAddChoreDialog
@@ -22,15 +22,37 @@ const choreName = ref('')
 const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
-  const assignRandomUser = store.assignRandomUser
+const assignRandomUser = store.assignRandomUser
 
+watch(
+  () => store.editingChore,
+  (chore) => {
+    if (chore) {
+      choreName.value = chore.title
+      selectedDate.value = chore.deadline ? new Date(chore.deadline) : null
+    } else {
+      choreName.value = ''
+      selectedDate.value = null
+    }
+  }
+)
 
-const selectedDate = ref(null)
-const menu = ref(false)
+const handleOpenDialog = (chore = null) => {
+  store.editingChore = chore
+  store.openAddChoreDialog()
+}
+
+const formatDate = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  return d.toISOString().split('T')[0]
+}
 
 const formattedDate = computed(() => {
   return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : 'Välj ett datum'
 })
+const selectedDate = ref(null)
+const menu = ref(false)
 
 const updateDate = (date) => {
   selectedDate.value = date
@@ -45,7 +67,7 @@ const getUserColor = (assignedTo) => {
 }
 
 const rules = {
-  required: (value) => !!value || 'Du måste ange en titel',
+  required: (value) => !!value || 'Du måste ange en titel'
 }
 
 const handleSubmit = async () => {
@@ -82,7 +104,7 @@ const handleSubmit = async () => {
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
-            <span>{{ chore.deadline }}</span>
+            <span>{{ formatDate(chore.deadline) }}</span>
           </div>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
@@ -90,11 +112,13 @@ const handleSubmit = async () => {
             @click="openAssignUserDialog(chore)"
             class="assignment-brick d-flex justify-center align-center"
             :style="{
-              backgroundColor: getUserColor(chore.assignedTo),
+              backgroundColor: getUserColor(chore.assignedTo)
             }"
             >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
-          <v-icon class="black-text" size="36" color="black">mdi-pencil-outline</v-icon>
+          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black"
+            >mdi-pencil-outline</v-icon
+          >
         </div>
       </v-btn>
       <v-dialog
@@ -112,13 +136,11 @@ const handleSubmit = async () => {
               style="overflow: visible"
               :key="user.id"
             >
-              <div
-                class="user-container d-flex flex-row justify-center align-center"
-              >
+              <div class="user-container d-flex flex-row justify-center align-center">
                 <span
                   class="assignment-brick d-flex justify-center align-center mr-6"
                   :style="{
-                    backgroundColor: getUserColor(user.name),
+                    backgroundColor: getUserColor(user.name)
                   }"
                   >{{ user.name.substring(0, 2).toUpperCase() }}</span
                 >
@@ -127,10 +149,7 @@ const handleSubmit = async () => {
               <hr />
             </v-card-text>
           </template>
-          <div
-            class="random-user-container d-flex flex-row"
-            @click="assignRandomUser"
-          >
+          <div class="random-user-container d-flex flex-row" @click="assignRandomUser">
             <v-icon size="36">mdi-dice-multiple</v-icon
             ><span class="assigned-name ml-6">Slumpa användare</span>
           </div>
@@ -149,7 +168,7 @@ const handleSubmit = async () => {
       </v-btn>
       <!-- addChoreDialog section-->
       <v-dialog
-        v-model="addChoreDialog"
+        v-model="store.addChoreDialog"
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
@@ -199,7 +218,6 @@ const handleSubmit = async () => {
                 </div>
               </div>
             </v-card-text>
-
             <!--Lägg till button section-->
             <v-card-actions class="justify-center flex-grow-0 mt-5">
               <v-btn
@@ -209,7 +227,9 @@ const handleSubmit = async () => {
                 class="add-btn"
                 block
               >
-                <span class="black-text rounded-btn">Lägg Till</span>
+                <span class="black-text rounded-btn">{{
+                  store.editingChore ? 'Ändra' : 'Lägg Till'
+                }}</span>
               </v-btn>
             </v-card-actions>
           </v-form>
@@ -325,8 +345,8 @@ const handleSubmit = async () => {
 .v-messages {
   opacity: unset;
 }
-  .user-container,
-  .random-user-container {
-    cursor: pointer;
-  }
+.user-container,
+.random-user-container {
+  cursor: pointer;
+}
 </style>
