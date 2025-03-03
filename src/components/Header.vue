@@ -71,6 +71,7 @@ onBeforeUnmount(() => {
   <div id="view-nav" class="py-2 d-flex ga-4">
     <router-link to="/sysslor">Sysslor</router-link>
     <router-link to="/beloningar">Belöningar</router-link>
+    <router-link to="/historik">Historik</router-link>
   </div>
 </template>
 
