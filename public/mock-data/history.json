@@ -1,0 +1,49 @@
+{
+  "history": [
+    {
+      "id": 6,
+      "title": "Tömma diskmaskinen",
+      "deadline": "2025-03-02",
+      "completedDate": "2025-03-02",
+      "assignedTo": "Mamma",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 7,
+      "title": "Städa badrummet",
+      "deadline": "2025-03-03",
+      "completedDate": "2025-03-03",
+      "assignedTo": "Pappa",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 8,
+      "title": "Handla",
+      "deadline": "2025-03-01",
+      "completedDate": "2025-03-01",
+      "assignedTo": "Pappa",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 9,
+      "title": "Rensa kylskåpet",
+      "deadline": "2025-02-28",
+      "completedDate": "2025-02-28",
+      "assignedTo": "Sofia",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 10,
+      "title": "Dammsuga",
+      "deadline": "2025-02-27",
+      "completedDate": "2025-02-27",
+      "assignedTo": "Algot",
+      "isCompleted": true,
+      "pointValue": 1
+    }
+  ]
+}
