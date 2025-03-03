@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useUserStore } from '../stores/UserStore'
 
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([
@@ -9,31 +10,31 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-14',
       assignedTo: 'Mamma',
       isCompleted: false,
-      pointValue: 1
+      pointValue: 1,
     },
     {
       id: 2,
       title: 'Diska',
-      deadline: '2025-03-14',
+      deadline: '2025-03-12',
       assignedTo: 'Pappa',
       isCompleted: false,
-      pointValue: 1
+      pointValue: 1,
     },
     {
       id: 3,
       title: 'Skriva inköpslista',
-      deadline: '2025-03-14',
+      deadline: '2025-03-16',
       assignedTo: 'Algot',
       isCompleted: false,
-      pointValue: 1
+      pointValue: 1,
     },
     {
       id: 4,
-      title: 'Tömma kylskåpet',
-      deadline: '2025-03-14',
+      title: 'Rensa kylskåpet',
+      deadline: '2025-03-11',
       assignedTo: 'Sofia',
       isCompleted: false,
-      pointValue: 1
+      pointValue: 1,
     },
     {
       id: 5,
@@ -41,14 +42,21 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-14',
       assignedTo: '',
       isCompleted: false,
-      pointValue: 1
-    }
+      pointValue: 1,
+    },
   ])
+
+  const sortedChores = computed(() => {
+    return [...chores.value].sort((a, b) => {
+      return new Date(a.deadline) - new Date(b.deadline)
+    })
+  })
 
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
   const editingChore = ref(null)
+  const userStore = useUserStore()
 
   const openAddChoreDialog = () => {
     console.log("Opening add chore dialog.")
@@ -99,6 +107,14 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
 
     editingChore.value = null
+    chores.value.push({
+      id: chores.value.length + 1,
+      title: choreTitle,
+      deadline: selectedDate || '',
+      assignedTo: '',
+      isCompleted: false,
+      pointValue: null,
+    })
 
     closeAddChoreDialog()
   }
@@ -110,6 +126,16 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
     assignUserDialog.value = false
   }
+
+  const assignRandomUser = () => {
+    const validUsers = userStore.users.filter((user) => user.name)
+
+    const randomIndex = Math.floor(Math.random() * validUsers.length)
+    const randomUser = validUsers[randomIndex]
+
+    addAssignedUser(randomUser.name)
+  }
+
   return {
     chores,
     addChoreDialog,
@@ -120,6 +146,8 @@ export const useChoreStore = defineStore('choreStore', () => {
     openAssignUserDialog,
     closeAssignUserDialog,
     addAssignedUser,
-    assignUserDialog
+    assignUserDialog,
+    sortedChores,
+    assignRandomUser
   }
 })

@@ -3,25 +3,26 @@
   import { useChoreStore } from '../stores/ChoreStore'
   import { useUserStore } from '../stores/UserStore'
 
-  const store = useChoreStore()
-  const userStore = useUserStore()
-  const addChoreDialog = computed({
-    get: () => store.addChoreDialog,
-    set: (value) => (store.addChoreDialog = value)
-  })
-  const assignUserDialog = computed({
-    get: () => store.assignUserDialog,
-    set: (value) => (store.assignUserDialog = value)
-  })
-  const openAddChoreDialog = store.openAddChoreDialog
-  const closeAddChoreDialog = store.closeAddChoreDialog
-  const openAssignUserDialog = store.openAssignUserDialog
-  const addChore = store.addChore
-  const addAssignedUser = store.addAssignedUser
-  const choreName = ref('')
-
-  const selectedDate = ref(null)
-  const menu = ref(false)
+const store = useChoreStore()
+const userStore = useUserStore()
+const addChoreDialog = computed({
+  get: () => store.addChoreDialog,
+  set: (value) => (store.addChoreDialog = value),
+})
+const assignUserDialog = computed({
+  get: () => store.assignUserDialog,
+  set: (value) => (store.assignUserDialog = value),
+})
+const openAddChoreDialog = store.openAddChoreDialog
+const closeAddChoreDialog = store.closeAddChoreDialog
+const openAssignUserDialog = store.openAssignUserDialog
+const addChore = store.addChore
+const addAssignedUser = store.addAssignedUser
+const choreName = ref('')
+const form = ref(null)
+const dateError = ref(null)
+const validateDate = ref(false)
+  const assignRandomUser = store.assignRandomUser
 
   watch(() => store.editingChore, (chore) => {
     if (chore) {
@@ -49,27 +50,57 @@
       ? new Date(selectedDate.value).toLocaleDateString()
       : 'Välj ett datum'
   })
+const selectedDate = ref(null)
+const menu = ref(false)
 
-  const updateDate = (date) => {
-    selectedDate.value = date
-    menu.value = false
+const formattedDate = computed(() => {
+  return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : 'Välj ett datum'
+})
+
+const updateDate = (date) => {
+  selectedDate.value = date
+  menu.value = false
+  dateError.value = null
+  validateDate.value = false
+}
+
+const getUserColor = (assignedTo) => {
+  const user = userStore.users.find((user) => user.name === assignedTo)
+  return user ? user.color : '#FFF'
+}
+
+const rules = {
+  required: (value) => !!value || 'Du måste ange en titel',
+}
+
+const handleSubmit = async () => {
+  validateDate.value = true
+  dateError.value = null
+
+  const { valid: titleValid } = await form.value.validate()
+
+  const dateValid = !!selectedDate.value
+  if (!dateValid) {
+    dateError.value = 'Du måste välja ett datum'
   }
 
-  const getUserColor = (assignedTo) => {
-    const user = userStore.users.find((user) => user.name === assignedTo)
-    return user ? user.color : '#FFF'
+  if (titleValid && dateValid) {
+    addChore(choreName.value, formattedDate.value)
+    closeAddChoreDialog()
+    form.value.reset()
+    selectedDate.value = null
+    dateError.value = null
   }
+}
 </script>
 
 <template>
   <div class="chores-container">
-    <section
-      class="list-of-chores-section d-flex justify-center flex-column align-center"
-    >
+    <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn
-        v-for="chore in store.chores"
+        v-for="chore in store.sortedChores"
         color="blue-lighten-4"
-        class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        class="border-md border-blue rounded-btn black-text custom-btn chores-button d-flex justify-space-between align-center"
         max-width="400px"
       >
         <div class="chore-info-container d-flex flex-column align-start">
@@ -84,7 +115,7 @@
             @click="openAssignUserDialog(chore)"
             class="assignment-brick d-flex justify-center align-center"
             :style="{
-              backgroundColor: getUserColor(chore.assignedTo)
+              backgroundColor: getUserColor(chore.assignedTo),
             }"
             >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
@@ -108,29 +139,32 @@
               style="overflow: visible"
               :key="user.id"
             >
-              <div class="d-flex flex-row justify-center align-center">
+              <div
+                class="user-container d-flex flex-row justify-center align-center"
+              >
                 <span
                   class="assignment-brick d-flex justify-center align-center mr-6"
                   :style="{
-                    backgroundColor: getUserColor(user.name)
+                    backgroundColor: getUserColor(user.name),
                   }"
                   >{{ user.name.substring(0, 2).toUpperCase() }}</span
                 >
                 <v-card-text class="assigned-name">{{ user.name }}</v-card-text>
               </div>
-              <hr
-                v-if="
-                  store.chores.filter((c) => c.assignedTo).length - 1 > index
-                "
-              />
+              <hr />
             </v-card-text>
           </template>
+          <div
+            class="random-user-container d-flex flex-row"
+            @click="assignRandomUser"
+          >
+            <v-icon size="36">mdi-dice-multiple</v-icon
+            ><span class="assigned-name ml-6">Slumpa användare</span>
+          </div>
         </div>
       </v-dialog>
     </section>
-    <section
-      class="create-new-section d-flex justify-center flex-column align-center"
-    >
+    <section class="create-new-section d-flex justify-center flex-column align-center">
       <v-btn
         @click="openAddChoreDialog"
         color="purple-lighten-4"
@@ -148,62 +182,63 @@
         class="d-flex align-start"
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
-          <v-card-text
-            class="flex-grow-0"
-            style="overflow: visible; padding-bottom: 0"
-          >
-            <v-text-field
-              v-model="choreName"
-              placeholder="Titel"
-            ></v-text-field>
+          <v-form ref="form">
+            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-text-field
+                v-model="choreName"
+                placeholder="Titel"
+                :rules="[rules.required]"
+              ></v-text-field>
 
-            <!-- Date Picker -->
-            <div class="d-flex justify-space-between align-center mt-4">
-              <div class="flex-grow">
-                <span>{{ formattedDate }}</span>
+              <!-- Date Picker -->
+              <div class="d-flex justify-space-between align-center mt-4">
+                <div class="flex-grow">
+                  <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
+                </div>
+                <div>
+                  <v-menu
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    :attach="true"
+                    content-class="date-picker-popup"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn v-bind="attrs" @click="menu = true" icon>
+                        <v-icon color="black">mdi-calendar</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-date-picker
+                        :hide-header="true"
+                        v-model="selectedDate"
+                        @update:modelValue="updateDate"
+                        no-title
+                      ></v-date-picker>
+                    </v-card>
+                  </v-menu>
+                </div>
               </div>
-
-              <div>
-                <v-menu
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  :attach="true"
-                  content-class="date-picker-popup"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" @click="menu = true" icon>
-                      <v-icon color="black">mdi-calendar</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-date-picker
-                      :hide-header="true"
-                      v-model="selectedDate"
-                      @update:modelValue="updateDate"
-                      no-title
-                    ></v-date-picker>
-                  </v-card>
-                </v-menu>
+              <div class="v-messages error--text" role="alert">
+                <div class="v-messages__wrapper">
+                  <div class="v-messages__message">{{ dateError }}</div>
+                </div>
               </div>
-            </div>
-          </v-card-text>
-
-          <!--Lägg till button section-->
-          <v-card-actions class="justify-center flex-grow-0 mt-5">
-            <v-btn
-              color="green"
-              @click="console.log('🟢 Button clicked!'), addChore(choreName, selectedDate)"
-              size="large"
-              class="add-btn"
-              block
-            >
-              <span class="black-text rounded-btn">
-                {{ store.editingChore ? 'Ändra' : 'Lägg Till' }}
-              </span>
-            </v-btn>
-          </v-card-actions>
+            </v-card-text>
+            <!--Lägg till button section-->
+            <v-card-actions class="justify-center flex-grow-0 mt-5">
+              <v-btn
+                color="green"
+                @click="handleSubmit(choreName, formattedDate)"
+                size="large"
+                class="add-btn"
+                block
+              >
+                <span class="black-text rounded-btn">{{ store.editingChore ? 'Ändra' : 'Lägg Till' }}</span>
+              </v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-dialog>
     </section>
@@ -211,99 +246,113 @@
 </template>
 
 <style scoped>
-  .auto-height-dialog .v-card {
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
+.auto-height-dialog .v-card {
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
 
-  .chores-container,
-  .create-chore {
-    width: 100%;
-  }
+.chores-container,
+.create-chore {
+  width: 100%;
+}
 
-  .rounded-btn {
-    border-radius: 16px;
-  }
+.rounded-btn {
+  border-radius: 16px;
+}
 
+.black-text {
+  color: #000;
+  text-transform: none;
+  font-weight: 400;
+}
+
+.add-btn {
+  background-color: #26a69a;
+  font-size: 1.3rem;
+  padding: 1rem 4rem !important;
+  margin-bottom: 0.5rem;
+  margin: 0 24px 0.5rem 24px;
+  border-radius: 16px;
+  height: unset !important;
+  .v-btn__content {
+    .black-text.rounded-btn {
+      width: 100%;
+    }
+  }
+}
+:deep(.v-card-actions) {
+  padding: 16px 24px !important;
+}
+
+.custom-btn {
+  padding: 2rem 1rem;
+  margin-bottom: 1rem;
+  width: 90%;
+  font-size: 1.1rem;
+}
+
+.chores-button {
+  cursor: unset;
+}
+
+.border-purple {
+  color: #6a1b9a;
+}
+.border-blue {
+  color: #0d47a1;
+}
+
+:deep(.v-btn__content) {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.chore-info-container {
+  gap: 0.4rem;
   .black-text {
+    font-size: 1.2rem;
+  }
+}
+.deadline-container {
+  gap: 0.6rem;
+  font-size: 0.8rem;
+}
+.assignment-brick {
+  background-color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.assigned-to-dialog {
+  .v-card-text {
+    padding: 0;
+  }
+  hr {
     color: #000;
-    text-transform: none;
-    font-weight: 400;
+    margin: 0.7rem 0;
   }
-
-  .add-btn {
-    background-color: #26a69a;
-    font-size: 1.3rem;
-    padding: 1rem 4rem !important;
-    margin-bottom: 0.5rem;
-    margin: 0 24px 0.5rem 24px;
-    border-radius: 16px;
-    height: unset !important;
-    .v-btn__content {
-      .black-text.rounded-btn {
-        width: 100%;
-      }
-    }
-  }
-  :deep(.v-card-actions) {
-    padding: 16px 24px !important;
-  }
-
-  .custom-btn {
-    padding: 2rem 1rem;
-    margin-bottom: 1rem;
-    width: 90%;
-    font-size: 1.1rem;
-  }
-
-  .border-purple {
-    color: #6a1b9a;
-  }
-  .border-blue {
-    color: #0d47a1;
-  }
-
-  :deep(.v-btn__content) {
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .chore-info-container {
-    gap: 0.4rem;
-    .black-text {
-      font-size: 1.2rem;
-    }
-  }
-  .deadline-container {
-    gap: 0.6rem;
-    font-size: 0.8rem;
-  }
-  .assignment-brick {
+  .assign-container {
     background-color: #fff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    max-width: 95%;
+    padding: 1rem;
+    .assigned-name {
+      font-size: 1.4rem;
+    }
   }
-  .assigned-to-dialog {
-    .v-card-text {
-      padding: 0;
-    }
-    hr {
-      color: #000;
-      margin: 0.7rem 0;
-    }
-    .assign-container {
-      background-color: #fff;
-      border-radius: 16px;
-      max-width: 95%;
-      padding: 1rem;
-      .assigned-name {
-        font-size: 1.4rem;
-      }
-    }
+}
+.v-messages__message {
+  color: #b00020;
+}
+.v-messages {
+  opacity: unset;
+}
+  .user-container,
+  .random-user-container {
+    cursor: pointer;
   }
 </style>
