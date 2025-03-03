@@ -19,9 +19,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header>
+  <header class="d-flex justify-space-between align-center">
     <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
-    <div id="user">
+    <div id="user" class="d-flex">
       <img id="avatar" src="../assets/avatarIcon.svg" alt="User icon" @click.stop="toggleMenu" />
       <v-overlay
         v-model="menuOpen"
@@ -30,30 +30,30 @@ onBeforeUnmount(() => {
         style="z-index: 1"
       ></v-overlay>
       <nav id="menu" :class="{ open: menuOpen }">
-        <div id="menu-header">
+        <div id="menu-header" class="d-flex justify-space-between align-center">
           <img id="avatar-menu" src="../assets/avatarIcon.svg" alt="User icon" />
           <v-icon class="black-text" size="40" color="black" @click="menuOpen = false"
             >mdi-close</v-icon
           >
         </div>
-        <div id="user-score">
+        <div id="user-score" class="d-flex align-center">
           <v-icon class="yellow-text star-icon" size="30" color="yellow">mdi-star</v-icon>
           <span>12 poäng</span>
         </div>
-        <div id="menu-content">
-          <div id="menu-category" class="py-5">
+        <div id="menu-content" class="d-flex-column">
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-trophy-variant</v-icon>
             <span>Belöningar</span>
           </div>
-          <div id="menu-category" class="py-5">
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-history</v-icon>
             <span>Historik</span>
           </div>
-          <div id="menu-category" class="py-5">
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-cog</v-icon>
             <span>Inställningar</span>
           </div>
-          <div id="menu-category" class="py-5">
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-sync</v-icon>
             <span>Synka hushåll</span>
           </div>
@@ -61,14 +61,14 @@ onBeforeUnmount(() => {
             <v-switch label="Tema" inset @click.stop></v-switch>
           </div>
         </div>
-        <div id="menu-footer">
+        <div id="menu-footer" class="d-flex justify-end align-center">
           <span>Logga ut</span>
           <v-icon class="black-text" size="30" color="black">mdi-logout</v-icon>
         </div>
       </nav>
     </div>
   </header>
-  <div id="view-nav" class="py-2">
+  <div id="view-nav" class="py-2 d-flex ga-4">
     <router-link to="/sysslor">Sysslor</router-link>
     <router-link to="/beloningar">Belöningar</router-link>
   </div>
@@ -81,18 +81,12 @@ header {
   padding: 0.625rem 1.25rem;
   width: 100%;
   z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-radius: 0 0 8px 8px;
   box-shadow:
     rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
     rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
   position: sticky;
   top: 0;
-}
-#user {
-  display: flex;
 }
 #avatar {
   height: 3rem;
@@ -113,17 +107,12 @@ header {
   transform: translateX(0);
 }
 #menu-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 0.625rem;
 }
 #avatar-menu {
   height: 3rem;
 }
 #user-score {
-  display: flex;
-  align-items: center;
   padding: 1.25rem;
 }
 #user-score span {
@@ -132,13 +121,9 @@ header {
   padding-left: 0.5rem;
 }
 #menu-content {
-  display: flex;
-  flex-direction: column;
   padding: 1.25rem;
 }
 #menu-category {
-  display: flex;
-  align-items: center;
   border-left-width: 0px;
   border-top-width: 0px;
   border-bottom-width: 1px;
@@ -157,9 +142,6 @@ header {
 }
 #menu-footer {
   padding: 0.625rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
   position: absolute;
   bottom: 1rem;
   right: 1rem;
@@ -168,10 +150,6 @@ header {
   font-size: 1.25rem;
   color: black;
   padding-right: 0.5rem;
-}
-#view-nav {
-  display: flex;
-  gap: 1rem;
 }
 
 /* Blinka lilla stjäna där */
