@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import Sync from '../components/Sync.vue'
 
 const menuOpen = ref(false)
 const toggleMenu = () => {
@@ -55,7 +56,7 @@ onBeforeUnmount(() => {
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-sync</v-icon>
-            <span>Synka hushåll</span>
+            <span><sync /></span>
           </div>
           <div id="theme-toggle" class="py-5">
             <v-switch label="Tema" inset @click.stop></v-switch>
