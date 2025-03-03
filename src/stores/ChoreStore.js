@@ -10,7 +10,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-14',
       assignedTo: 'Mamma',
       isCompleted: false,
-      pointValue: 1,
+      pointValue: 1
     },
     {
       id: 2,
@@ -18,7 +18,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-12',
       assignedTo: 'Pappa',
       isCompleted: false,
-      pointValue: 1,
+      pointValue: 1
     },
     {
       id: 3,
@@ -26,7 +26,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-16',
       assignedTo: 'Algot',
       isCompleted: false,
-      pointValue: 1,
+      pointValue: 1
     },
     {
       id: 4,
@@ -34,7 +34,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-11',
       assignedTo: 'Sofia',
       isCompleted: false,
-      pointValue: 1,
+      pointValue: 1
     },
     {
       id: 5,
@@ -42,8 +42,8 @@ export const useChoreStore = defineStore('choreStore', () => {
       deadline: '2025-03-14',
       assignedTo: '',
       isCompleted: false,
-      pointValue: 1,
-    },
+      pointValue: 1
+    }
   ])
 
   const sortedChores = computed(() => {
@@ -59,7 +59,7 @@ export const useChoreStore = defineStore('choreStore', () => {
   const userStore = useUserStore()
 
   const openAddChoreDialog = () => {
-    console.log("Opening add chore dialog.")
+    console.log('Opening add chore dialog.')
     addChoreDialog.value = true
   }
 
@@ -78,23 +78,23 @@ export const useChoreStore = defineStore('choreStore', () => {
   }
 
   const addChore = (choreTitle, selectedDate) => {
-    console.log("Adding chore:", choreTitle, "Date:", selectedDate)
+    console.log('Adding chore:', choreTitle, 'Date:', selectedDate)
     if (!choreTitle.trim()) {
-      console.warn("Chore title is empty, stopping function.")
+      console.warn('Chore title is empty, stopping function.')
       return
     } else {
-      console.log("Chore tite is valid:", choreTitle)
+      console.log('Chore tite is valid:', choreTitle)
     }
     if (editingChore.value) {
-      console.log("Editing an existing chore...")
+      console.log('Editing an existing chore...')
       const choreIndex = chores.value.findIndex((chore) => chore.id === editingChore.value.id)
       if (choreIndex !== -1) {
         chores.value[choreIndex].title = choreTitle
         chores.value[choreIndex].deadline = selectedDate
-        console.log("Chore updated:", chores.value[choreIndex])
+        console.log('Chore updated:', chores.value[choreIndex])
       }
     } else {
-      console.log("Adding new chore...")
+      console.log('Adding new chore...')
       chores.value.push({
         id: chores.value.length + 1,
         title: choreTitle,
@@ -103,19 +103,10 @@ export const useChoreStore = defineStore('choreStore', () => {
         isCompleted: false,
         pointValue: null
       })
-      console.log("Updated chores list:", chores.value)
+      console.log('Updated chores list:', chores.value)
     }
 
     editingChore.value = null
-    chores.value.push({
-      id: chores.value.length + 1,
-      title: choreTitle,
-      deadline: selectedDate || '',
-      assignedTo: '',
-      isCompleted: false,
-      pointValue: null,
-    })
-
     closeAddChoreDialog()
   }
 
