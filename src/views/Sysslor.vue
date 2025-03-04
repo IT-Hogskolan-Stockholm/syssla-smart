@@ -23,6 +23,7 @@ const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
 const assignRandomUser = store.assignRandomUser
+const rewardPoints = ref(null)
 
 watch(
   () => store.editingChore,
@@ -82,11 +83,12 @@ const handleSubmit = async () => {
   }
 
   if (titleValid && dateValid) {
-    addChore(choreName.value, formattedDate.value)
+    addChore(choreName.value, formattedDate.value, rewardPoints.value)
     closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
     dateError.value = null
+    rewardPoints.value = null
   }
 }
 </script>
@@ -106,6 +108,7 @@ const handleSubmit = async () => {
             <span><v-icon>mdi-calendar-month</v-icon></span>
             <span>{{ formatDate(chore.deadline) }}</span>
           </div>
+          <span class="black-text">⭐ {{ chore.pointValue }} poäng</span>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
           <span
@@ -180,6 +183,12 @@ const handleSubmit = async () => {
                 v-model="choreName"
                 placeholder="Titel"
                 :rules="[rules.required]"
+              ></v-text-field>
+              <v-text-field
+                v-model="rewardPoints"
+                placeholder="Poäng"
+                type="number"
+                class="mt-4"
               ></v-text-field>
 
               <!-- Date Picker -->
