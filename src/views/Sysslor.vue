@@ -168,6 +168,7 @@ const handleSubmit = async () => {
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
+            <span>{{ formatDate(chore.deadline) }}</span>
           </div>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
