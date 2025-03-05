@@ -185,9 +185,8 @@ const handleSubmit = async () => {
           </v-icon>
         </div>
         <div class="star-points">
-          <v-badge color="yellow" :content="chore.pointValue" overlap>
-            <v-icon color="yellow" size="32">mdi-star</v-icon>
-          </v-badge>
+          <v-icon color="yellow" size="32">mdi-star</v-icon>
+          <span class="star-number">{{ chore.pointValue }}</span>
         </div>
       </v-btn>
       <v-dialog
@@ -453,6 +452,16 @@ const handleSubmit = async () => {
 .star-points {
   position: absolute;
   top: -15px;
-  right: -10px;
+  right: -15px;
+}
+
+.star-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: rgb(0, 0, 0);
+  font-size: 14px;
 }
 </style>
