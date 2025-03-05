@@ -7,7 +7,6 @@ const store = useChoreStore()
 const userStore = useUserStore()
 const chores = computed(() => store.chores)
 const archivedChores = computed(() => store.archivedChores)
-
 const archiveChore = store.archiveChore
 const undoArchiveChore = store.undoArchiveChore
 const addChoreDialog = computed({
@@ -18,7 +17,6 @@ const assignUserDialog = computed({
   get: () => store.assignUserDialog,
   set: (value) => (store.assignUserDialog = value)
 })
-
 const openAddChoreDialog = store.openAddChoreDialog
 const closeAddChoreDialog = store.closeAddChoreDialog
 const openAssignUserDialog = store.openAssignUserDialog
@@ -31,15 +29,13 @@ const validateDate = ref(false)
 const assignRandomUser = store.assignRandomUser
 
 onMounted(async () => {
-  await store.fetchChores() // Hämta sysslor
-  await userStore.fetchUsers() // Hämta användare
+  await store.fetchChores()
+  await userStore.fetchUsers()
 })
 
-// *** Swipe functionality
 const swipeProgress = ref({})
 const showUndo = ref({})
 
-// When user starts swipe
 const startSwipe = (chore) => {
   swipeProgress.value[chore.id] = 0
 }
@@ -80,6 +76,14 @@ watch(
 )
 
 const handleOpenDialog = (chore = null) => {
+  store.editingChore = null
+  if (!chore) {
+    choreName.value = ''
+    selectedDate.value = null
+  } else {
+    choreName.value = chore.title
+    selectedDate.value = chore.deadline ? new Date(chore.deadline) : null
+  }
   store.editingChore = chore
   store.openAddChoreDialog()
 }
@@ -93,6 +97,7 @@ const formatDate = (date) => {
 const formattedDate = computed(() => {
   return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : 'Välj ett datum'
 })
+
 const selectedDate = ref(null)
 const menu = ref(false)
 
@@ -125,7 +130,7 @@ const handleSubmit = async () => {
 
   if (titleValid && dateValid) {
     addChore(choreName.value, formattedDate.value)
-    store.closeAddChoreDialog() // Se till att denna anropas korrekt
+    store.closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
     dateError.value = null

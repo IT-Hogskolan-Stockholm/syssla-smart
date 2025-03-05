@@ -31,7 +31,6 @@ export const useChoreStore = defineStore('choreStore', () => {
 
   const addChore = async (title, deadline) => {
     if (editingChore.value) {
-      // Uppdatera befintlig syssla (PATCH)
       try {
         await axios.patch(`http://localhost:3000/chores/${editingChore.value.id}`, {
           title,
@@ -44,9 +43,11 @@ export const useChoreStore = defineStore('choreStore', () => {
       }
       editingChore.value = null
     } else {
-      // Skapa ny syssla (POST)
+      const highestId =
+        chores.value.length > 0 ? Math.max(...chores.value.map((chore) => chore.id)) : 0
+      const newId = highestId + 1
       const newChore = {
-        id: Date.now(),
+        id: newId,
         title,
         deadline,
         assignedTo: '',
