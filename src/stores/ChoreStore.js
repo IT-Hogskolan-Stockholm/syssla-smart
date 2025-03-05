@@ -45,6 +45,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       pointValue: 1
     }
   ])
+  const archivedChores = ref([])
 
   const sortedChores = computed(() => {
     return [...chores.value].sort((a, b) => {
@@ -127,9 +128,26 @@ export const useChoreStore = defineStore('choreStore', () => {
 
     addAssignedUser(randomUser.name)
   }
+  const archiveChore = (chore) => {
+    const index = chores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      // Using splice() to remove and push the chore into archivedChores
+      const [archivedChore] = chores.value.splice(index, 1)
+      archivedChores.value.push(archivedChore)
+    }
+  }
 
+  const undoArchiveChore = (chore) => {
+    const index = archivedChores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      // Using splice() to remove and push the chore back into chores
+      const [restoredChore] = archivedChores.value.splice(index, 1)
+      chores.value.push(restoredChore)
+    }
+  }
   return {
     chores,
+    archivedChores,
     addChoreDialog,
     openAddChoreDialog,
     closeAddChoreDialog,
@@ -140,6 +158,8 @@ export const useChoreStore = defineStore('choreStore', () => {
     addAssignedUser,
     assignUserDialog,
     sortedChores,
-    assignRandomUser
+    assignRandomUser,
+    archiveChore,
+    undoArchiveChore
   }
 })
