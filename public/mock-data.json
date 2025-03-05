@@ -1,0 +1,121 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Mamma",
+      "color": "#F48FB1",
+      "scoreValue": 1,
+      "completedTasks": 0
+    },
+    {
+      "id": 2,
+      "name": "Pappa",
+      "color": "#7CB342",
+      "scoreValue": 1,
+      "completedTasks": 0
+    },
+    {
+      "id": 3,
+      "name": "Algot",
+      "color": "#039BE5",
+      "scoreValue": 1,
+      "completedTasks": 0
+    },
+    {
+      "id": 4,
+      "name": "Sofia",
+      "color": "#EC407A",
+      "scoreValue": 1,
+      "completedTasks": 0
+    }
+  ],
+  "history": [
+    {
+      "id": 6,
+      "title": "Tömma diskmaskinen",
+      "deadline": "2025-03-02",
+      "completedDate": "2025-03-02",
+      "assignedTo": "Mamma",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 7,
+      "title": "Städa badrummet",
+      "deadline": "2025-03-03",
+      "completedDate": "2025-03-03",
+      "assignedTo": "Pappa",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 8,
+      "title": "Handla",
+      "deadline": "2025-03-01",
+      "completedDate": "2025-03-01",
+      "assignedTo": "Pappa",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 9,
+      "title": "Rensa kylskåpet",
+      "deadline": "2025-02-28",
+      "completedDate": "2025-02-28",
+      "assignedTo": "Sofia",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": 10,
+      "title": "Dammsuga",
+      "deadline": "2025-02-27",
+      "completedDate": "2025-02-27",
+      "assignedTo": "Algot",
+      "isCompleted": true,
+      "pointValue": 1
+    }
+  ],
+  "chores": [
+    {
+      "id": 1,
+      "title": "Dammsuga",
+      "deadline": "2025-03-14",
+      "assignedTo": "Mamma",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": 2,
+      "title": "Diska",
+      "deadline": "2025-03-12",
+      "assignedTo": "Pappa",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": 3,
+      "title": "Skriva inköpslista",
+      "deadline": "2025-03-16",
+      "assignedTo": "Algot",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": 4,
+      "title": "Rensa kylskåpet",
+      "deadline": "2025-03-11",
+      "assignedTo": "Sofia",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": 5,
+      "title": "Putsa fönster",
+      "deadline": "2025-03-14",
+      "assignedTo": "",
+      "isCompleted": false,
+      "pointValue": 1
+    }
+  ]
+}
