@@ -68,19 +68,16 @@ watch(
     if (chore) {
       choreName.value = chore.title
       selectedDate.value = chore.deadline ? new Date(chore.deadline) : null
-    } else {
-      choreName.value = ''
-      selectedDate.value = null
     }
   }
 )
 
 const handleOpenDialog = (chore = null) => {
+  store.closeAddChoreDialog()
   store.editingChore = null
-  if (!chore) {
-    choreName.value = ''
-    selectedDate.value = null
-  } else {
+  choreName.value = ''
+  selectedDate.value = null
+  if (chore) {
     choreName.value = chore.title
     selectedDate.value = chore.deadline ? new Date(chore.deadline) : null
   }
@@ -245,6 +242,15 @@ const handleSubmit = async () => {
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
+        @update:model-value="
+          (isOpen) => {
+            if (!isOpen) {
+              store.editingChore = null
+              choreName = ''
+              selectedDate = null
+            }
+          }
+        "
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
           <v-form ref="form">

@@ -45,7 +45,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     } else {
       const highestId =
         chores.value.length > 0 ? Math.max(...chores.value.map((chore) => chore.id)) : 0
-      const newId = highestId + 1
+      const newId = (highestId + 1).toString()
       const newChore = {
         id: newId,
         title,
@@ -94,26 +94,65 @@ export const useChoreStore = defineStore('choreStore', () => {
     addChoreDialog.value = false
   }
 
-  const assignRandomUser = () => {
-    const validUsers = userStore.users.filter((user) => user.name)
-    const randomIndex = Math.floor(Math.random() * validUsers.length)
-    const randomUser = validUsers[randomIndex]
-    addAssignedUser(randomUser.name)
-  }
-
-  const archiveChore = (chore) => {
+  const archiveChore = async (chore) => {
     const index = chores.value.findIndex((c) => c.id === chore.id)
     if (index !== -1) {
       const [archivedChore] = chores.value.splice(index, 1)
       archivedChores.value.push(archivedChore)
+
+      const completedChore = {
+        ...archivedChore,
+        completedDate: new Date().toISOString().split('T')[0],
+        isCompleted: true
+      }
+
+      try {
+        await axios.post('http://localhost:3000/history', completedChore)
+      } catch (error) {
+        console.error('Kunde inte arkivera sysslan i historiken:', error)
+      }
+
+      if (archivedChore.assignedTo) {
+        try {
+          const userResponse = await axios.get('http://localhost:3000/users')
+          const users = userResponse.data
+          const user = users.find((u) => u.name === archivedChore.assignedTo)
+
+          if (user) {
+            await axios.patch(`http://localhost:3000/users/${user.id}`, {
+              completedTasks: user.completedTasks + 1,
+              scoreValue: user.scoreValue + archivedChore.pointValue
+            })
+          }
+        } catch (error) {
+          console.error('Kunde inte uppdatera användaren:', error)
+        }
+      }
+
+      setTimeout(async () => {
+        const isStillArchived = archivedChores.value.find((c) => c.id === chore.id)
+        if (isStillArchived) {
+          try {
+            await axios.delete(`http://localhost:3000/chores/${chore.id}`)
+          } catch (error) {
+            console.error('Kunde inte ta bort sysslan från chores:', error)
+          }
+        }
+      }, 3000)
     }
   }
 
-  const undoArchiveChore = (chore) => {
+  const undoArchiveChore = async (chore) => {
     const index = archivedChores.value.findIndex((c) => c.id === chore.id)
     if (index !== -1) {
       const [restoredChore] = archivedChores.value.splice(index, 1)
       chores.value.push(restoredChore)
+
+      try {
+        await axios.post('http://localhost:3000/chores', restoredChore)
+      } catch (error) {
+        console.error('Kunde inte återställa sysslan:', error)
+      }
     }
   }
 
@@ -130,7 +169,6 @@ export const useChoreStore = defineStore('choreStore', () => {
     addChore,
     openAssignUserDialog,
     addAssignedUser,
-    assignRandomUser,
     archiveChore,
     undoArchiveChore
   }
