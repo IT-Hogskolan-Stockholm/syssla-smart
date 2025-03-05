@@ -31,9 +31,11 @@ watch(
     if (chore) {
       choreName.value = chore.title
       selectedDate.value = chore.deadline ? new Date(chore.deadline) : null
+      rewardPoints.value = chore.pointValue
     } else {
       choreName.value = ''
       selectedDate.value = null
+      rewardPoints.value = null
     }
   }
 )
@@ -106,9 +108,7 @@ const handleSubmit = async () => {
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
-            <span>{{ formatDate(chore.deadline) }}</span>
           </div>
-          <span class="black-text">⭐ {{ chore.pointValue }} poäng</span>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
           <span
@@ -122,6 +122,11 @@ const handleSubmit = async () => {
           <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black"
             >mdi-pencil-outline</v-icon
           >
+        </div>
+        <div class="star-points">
+          <v-badge color="yellow" :content="chore.pointValue" overlap>
+            <v-icon color="yellow" size="32">mdi-star</v-icon>
+          </v-badge>
         </div>
       </v-btn>
       <v-dialog
@@ -357,5 +362,10 @@ const handleSubmit = async () => {
 .user-container,
 .random-user-container {
   cursor: pointer;
+}
+.star-points {
+  position: absolute;
+  top: -15px;
+  right: -10px;
 }
 </style>
