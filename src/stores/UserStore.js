@@ -7,8 +7,8 @@ export const useUserStore = defineStore('userStore', () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/mock-data/users.json')
-      users.value = Array.isArray(response.data.users) ? response.data.users : []
+      const response = await axios.get('http://localhost:3000/users')
+      users.value = Array.isArray(response.data) ? response.data : []
     } catch (error) {
       console.error('Fel vid hämtning av användare:', error)
     }

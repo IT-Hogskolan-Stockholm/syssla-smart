@@ -31,7 +31,8 @@ const validateDate = ref(false)
 const assignRandomUser = store.assignRandomUser
 
 onMounted(async () => {
-  await userStore.fetchUsers() // Vänta på att användarna ska hämtas
+  await store.fetchChores() // Hämta sysslor
+  await userStore.fetchUsers() // Hämta användare
 })
 
 // *** Swipe functionality
@@ -116,15 +117,15 @@ const handleSubmit = async () => {
   dateError.value = null
 
   const { valid: titleValid } = await form.value.validate()
-
   const dateValid = !!selectedDate.value
+
   if (!dateValid) {
     dateError.value = 'Du måste välja ett datum'
   }
 
   if (titleValid && dateValid) {
     addChore(choreName.value, formattedDate.value)
-    closeAddChoreDialog()
+    store.closeAddChoreDialog() // Se till att denna anropas korrekt
     form.value.reset()
     selectedDate.value = null
     dateError.value = null

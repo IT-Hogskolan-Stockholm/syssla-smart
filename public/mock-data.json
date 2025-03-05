@@ -1,37 +1,37 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Mamma",
       "color": "#F48FB1",
       "scoreValue": 1,
-      "completedTasks": 0
+      "completedTasks": 2
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Pappa",
       "color": "#7CB342",
       "scoreValue": 1,
-      "completedTasks": 0
+      "completedTasks": 1
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Algot",
       "color": "#039BE5",
       "scoreValue": 1,
-      "completedTasks": 0
+      "completedTasks": 1
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Sofia",
       "color": "#EC407A",
       "scoreValue": 1,
-      "completedTasks": 0
+      "completedTasks": 1
     }
   ],
   "history": [
     {
-      "id": 6,
+      "id": "6",
       "title": "Tömma diskmaskinen",
       "deadline": "2025-03-02",
       "completedDate": "2025-03-02",
@@ -40,16 +40,16 @@
       "pointValue": 1
     },
     {
-      "id": 7,
+      "id": "7",
       "title": "Städa badrummet",
       "deadline": "2025-03-03",
       "completedDate": "2025-03-03",
-      "assignedTo": "Pappa",
+      "assignedTo": "Mamma",
       "isCompleted": true,
       "pointValue": 1
     },
     {
-      "id": 8,
+      "id": "8",
       "title": "Handla",
       "deadline": "2025-03-01",
       "completedDate": "2025-03-01",
@@ -58,7 +58,7 @@
       "pointValue": 1
     },
     {
-      "id": 9,
+      "id": "9",
       "title": "Rensa kylskåpet",
       "deadline": "2025-02-28",
       "completedDate": "2025-02-28",
@@ -67,7 +67,7 @@
       "pointValue": 1
     },
     {
-      "id": 10,
+      "id": "10",
       "title": "Dammsuga",
       "deadline": "2025-02-27",
       "completedDate": "2025-02-27",
@@ -78,7 +78,7 @@
   ],
   "chores": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Dammsuga",
       "deadline": "2025-03-14",
       "assignedTo": "Mamma",
@@ -86,7 +86,7 @@
       "pointValue": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Diska",
       "deadline": "2025-03-12",
       "assignedTo": "Pappa",
@@ -94,7 +94,7 @@
       "pointValue": 1
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Skriva inköpslista",
       "deadline": "2025-03-16",
       "assignedTo": "Algot",
@@ -102,15 +102,15 @@
       "pointValue": 1
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Rensa kylskåpet",
-      "deadline": "2025-03-11",
+      "deadline": "2025-03-12",
       "assignedTo": "Sofia",
       "isCompleted": false,
       "pointValue": 1
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Putsa fönster",
       "deadline": "2025-03-14",
       "assignedTo": "",

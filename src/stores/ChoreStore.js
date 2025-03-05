@@ -3,54 +3,15 @@ import axios from 'axios'
 import { ref, computed } from 'vue'
 
 export const useChoreStore = defineStore('choreStore', () => {
-  const chores = ref([
-    {
-      id: 1,
-      title: 'Dammsuga',
-      deadline: '2025-03-14',
-      assignedTo: 'Mamma',
-      isCompleted: false,
-      pointValue: 1
-    },
-    {
-      id: 2,
-      title: 'Diska',
-      deadline: '2025-03-12',
-      assignedTo: 'Pappa',
-      isCompleted: false,
-      pointValue: 1
-    },
-    {
-      id: 3,
-      title: 'Skriva inköpslista',
-      deadline: '2025-03-16',
-      assignedTo: 'Algot',
-      isCompleted: false,
-      pointValue: 1
-    },
-    {
-      id: 4,
-      title: 'Rensa kylskåpet',
-      deadline: '2025-03-11',
-      assignedTo: 'Sofia',
-      isCompleted: false,
-      pointValue: 1
-    },
-    {
-      id: 5,
-      title: 'Putsa fönster',
-      deadline: '2025-03-14',
-      assignedTo: '',
-      isCompleted: false,
-      pointValue: 1
-    }
-  ])
+  const chores = ref([])
   const archivedChores = ref([])
 
   const sortedChores = computed(() => {
-    return [...chores.value].sort((a, b) => {
-      return new Date(a.deadline) - new Date(b.deadline)
-    })
+    return Array.isArray(chores.value)
+      ? [...chores.value].sort((a, b) => {
+          return new Date(a.deadline) - new Date(b.deadline)
+        })
+      : []
   })
 
   const addChoreDialog = ref(false)
@@ -59,8 +20,8 @@ export const useChoreStore = defineStore('choreStore', () => {
 
   const fetchChores = async () => {
     try {
-      const response = await axios.get('/mock-data/chores.json')
-      chores.value = response.data.chores
+      const response = await axios.get('http://localhost:3000/chores')
+      chores.value = Array.isArray(response.data) ? response.data : []
     } catch (error) {
       console.error('Kunde inte hämta sysslor:', error)
     }
@@ -68,13 +29,36 @@ export const useChoreStore = defineStore('choreStore', () => {
 
   fetchChores()
 
-  const addChore = (title, deadline) => {
+  const addChore = async (title, deadline) => {
     if (editingChore.value) {
-      editingChore.value.title = title
-      editingChore.value.deadline = deadline
+      // Uppdatera befintlig syssla (PATCH)
+      try {
+        await axios.patch(`http://localhost:3000/chores/${editingChore.value.id}`, {
+          title,
+          deadline
+        })
+        editingChore.value.title = title
+        editingChore.value.deadline = deadline
+      } catch (error) {
+        console.error('Kunde inte uppdatera sysslan:', error)
+      }
       editingChore.value = null
     } else {
-      chores.value.push({ id: Date.now(), title, deadline, assignedTo: '' })
+      // Skapa ny syssla (POST)
+      const newChore = {
+        id: Date.now(),
+        title,
+        deadline,
+        assignedTo: '',
+        isCompleted: false,
+        pointValue: 1
+      }
+      try {
+        await axios.post('http://localhost:3000/chores', newChore)
+        chores.value.push(newChore)
+      } catch (error) {
+        console.error('Kunde inte skapa sysslan:', error)
+      }
     }
     addChoreDialog.value = false
   }
@@ -87,33 +71,38 @@ export const useChoreStore = defineStore('choreStore', () => {
     editingChore.value = chore
     assignUserDialog.value = true
   }
-  const addAssignedUser = (user) => {
-    console.log('selectedChoreId:', selectedChoreId.value)
-    console.log('chores:', chores.value)
-    console.log('user:', user)
 
-    const index = chores.value.findIndex((c) => c.id === selectedChoreId.value)
+  const addAssignedUser = async (user) => {
+    const index = chores.value.findIndex((c) => c.id === editingChore.value?.id)
     if (index !== -1) {
-      chores.value[index].assignedTo = user
+      try {
+        await axios.patch(`http://localhost:3000/chores/${chores.value[index].id}`, {
+          assignedTo: user
+        })
+        chores.value[index].assignedTo = user
+      } catch (error) {
+        console.error('Kunde inte uppdatera tilldelad användare:', error)
+      }
     } else {
-      console.error('Sysslan med id', selectedChoreId.value, 'hittades inte')
+      console.error('Sysslan hittades inte')
     }
-
     assignUserDialog.value = false
+  }
+
+  const closeAddChoreDialog = () => {
+    addChoreDialog.value = false
   }
 
   const assignRandomUser = () => {
     const validUsers = userStore.users.filter((user) => user.name)
-
     const randomIndex = Math.floor(Math.random() * validUsers.length)
     const randomUser = validUsers[randomIndex]
-
     addAssignedUser(randomUser.name)
   }
+
   const archiveChore = (chore) => {
     const index = chores.value.findIndex((c) => c.id === chore.id)
     if (index !== -1) {
-      // Using splice() to remove and push the chore into archivedChores
       const [archivedChore] = chores.value.splice(index, 1)
       archivedChores.value.push(archivedChore)
     }
@@ -122,16 +111,17 @@ export const useChoreStore = defineStore('choreStore', () => {
   const undoArchiveChore = (chore) => {
     const index = archivedChores.value.findIndex((c) => c.id === chore.id)
     if (index !== -1) {
-      // Using splice() to remove and push the chore back into chores
       const [restoredChore] = archivedChores.value.splice(index, 1)
       chores.value.push(restoredChore)
     }
   }
+
   return {
     chores,
     archivedChores,
     addChoreDialog,
     openAddChoreDialog,
+    closeAddChoreDialog,
     assignUserDialog,
     editingChore,
     fetchChores,
@@ -139,6 +129,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     addChore,
     openAssignUserDialog,
     addAssignedUser,
+    assignRandomUser,
     archiveChore,
     undoArchiveChore
   }
