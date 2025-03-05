@@ -52,11 +52,21 @@ export const useChoreStore = defineStore('choreStore', () => {
     })
   })
 
+  const addRewardDialog = ref(false)
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
   const editingChore = ref(null)
   const userStore = useUserStore()
+
+  const openAddRewardDialog = () => {
+    console.log('Opening add reward dialog')
+    addRewardDialog.value = true
+  }
+  const closeAddRewardDialog = () => {
+    console.log('Closing add reward dialog')
+    addRewardDialog.value = false
+  }
 
   const openAddChoreDialog = () => {
     console.log('Opening add chore dialog.')
@@ -139,6 +149,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     addAssignedUser,
     assignUserDialog,
     sortedChores,
-    assignRandomUser
+    assignRandomUser,
+    openAddRewardDialog
   }
 })
