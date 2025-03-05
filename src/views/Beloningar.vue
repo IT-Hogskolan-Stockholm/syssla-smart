@@ -41,20 +41,33 @@
             ></textarea>
           </v-card-text>
 
-          <v-card-text class="flex-grow-0 custom-card-text">
-              <v-slider
+          <v-card-text class="flex-grow-0 custom-card-text d-flex align-center">
+
+            <v-text-field
                 v-model="points"
+                type="number"
                 min="0"
                 max="100"
                 step="1"
+                class="mc-3 text-center"
+                style="max-width: 80px; text-align: center"
                 label="Poäng"
-                thumb-label
-                tick-labels
-                class="my-3"
-              >
+                hide-details
+                single-line
+              ></v-text-field>
 
-              </v-slider>
+              <div class="d-flex flex-column align-center mx-2">
+
+              <v-btn icon @click="increasePoints">
+                <v-icon>mdi-chevron-up</v-icon>
+              </v-btn>
+              <v-btn icon @click="decreasePoints">
+                <v-icon>mdi-chevron-down</v-icon>
+              </v-btn>
+            </div>
+            <span class="ml-2 font-weight-bold">Poäng</span>
             </v-card-text>
+
 
           <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
@@ -85,13 +98,25 @@
 </template>
 
 <script setup>
+import {ref} from 'vue';
+
 import { useChoreStore } from '../stores/ChoreStore';
 
+const points = ref(0)
 const store = useChoreStore()
+
+const increasePoints = () => {
+  if (points.value < 100) points.value++
+}
+
+const decreasePoints = () => {
+  if (points.value < 100) points.value--
+}
 
 const openAddRewardDialog = () => {
   store.addRewardDialog = true
 }
+
 
 const rules = {
   required: (value) => !!value || 'Du måste ange en titel'
