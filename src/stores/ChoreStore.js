@@ -3,7 +3,56 @@ import axios from 'axios'
 import { ref, computed } from 'vue'
 
 export const useChoreStore = defineStore('choreStore', () => {
-  const chores = ref([])
+  const chores = ref([
+    {
+      id: 1,
+      title: 'Dammsuga',
+      deadline: '2025-03-14',
+      assignedTo: 'Mamma',
+      isCompleted: false,
+      pointValue: 1
+    },
+    {
+      id: 2,
+      title: 'Diska',
+      deadline: '2025-03-12',
+      assignedTo: 'Pappa',
+      isCompleted: false,
+      pointValue: 1
+    },
+    {
+      id: 3,
+      title: 'Skriva inköpslista',
+      deadline: '2025-03-16',
+      assignedTo: 'Algot',
+      isCompleted: false,
+      pointValue: 1
+    },
+    {
+      id: 4,
+      title: 'Rensa kylskåpet',
+      deadline: '2025-03-11',
+      assignedTo: 'Sofia',
+      isCompleted: false,
+      pointValue: 1
+    },
+    {
+      id: 5,
+      title: 'Putsa fönster',
+      deadline: '2025-03-14',
+      assignedTo: '',
+      isCompleted: false,
+      pointValue: 1
+    }
+  ])
+  const archivedChores = ref([])
+
+  const sortedChores = computed(() => {
+    return [...chores.value].sort((a, b) => {
+      return new Date(a.deadline) - new Date(b.deadline)
+    })
+  })
+
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const editingChore = ref(null)
@@ -18,12 +67,6 @@ export const useChoreStore = defineStore('choreStore', () => {
   }
 
   fetchChores()
-
-  const sortedChores = computed(() => {
-    return Array.isArray(chores.value)
-      ? chores.value.slice().sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-      : []
-  })
 
   const addChore = (title, deadline) => {
     if (editingChore.value) {
@@ -59,8 +102,34 @@ export const useChoreStore = defineStore('choreStore', () => {
     assignUserDialog.value = false
   }
 
+  const assignRandomUser = () => {
+    const validUsers = userStore.users.filter((user) => user.name)
+
+    const randomIndex = Math.floor(Math.random() * validUsers.length)
+    const randomUser = validUsers[randomIndex]
+
+    addAssignedUser(randomUser.name)
+  }
+  const archiveChore = (chore) => {
+    const index = chores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      // Using splice() to remove and push the chore into archivedChores
+      const [archivedChore] = chores.value.splice(index, 1)
+      archivedChores.value.push(archivedChore)
+    }
+  }
+
+  const undoArchiveChore = (chore) => {
+    const index = archivedChores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      // Using splice() to remove and push the chore back into chores
+      const [restoredChore] = archivedChores.value.splice(index, 1)
+      chores.value.push(restoredChore)
+    }
+  }
   return {
     chores,
+    archivedChores,
     addChoreDialog,
     openAddChoreDialog,
     assignUserDialog,
@@ -69,6 +138,8 @@ export const useChoreStore = defineStore('choreStore', () => {
     sortedChores,
     addChore,
     openAssignUserDialog,
-    addAssignedUser
+    addAssignedUser,
+    archiveChore,
+    undoArchiveChore
   }
 })

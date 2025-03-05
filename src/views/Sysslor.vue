@@ -5,6 +5,11 @@ import { useUserStore } from '../stores/UserStore'
 
 const store = useChoreStore()
 const userStore = useUserStore()
+const chores = computed(() => store.chores)
+const archivedChores = computed(() => store.archivedChores)
+
+const archiveChore = store.archiveChore
+const undoArchiveChore = store.undoArchiveChore
 const addChoreDialog = computed({
   get: () => store.addChoreDialog,
   set: (value) => (store.addChoreDialog = value)
@@ -13,6 +18,7 @@ const assignUserDialog = computed({
   get: () => store.assignUserDialog,
   set: (value) => (store.assignUserDialog = value)
 })
+
 const openAddChoreDialog = store.openAddChoreDialog
 const closeAddChoreDialog = store.closeAddChoreDialog
 const openAssignUserDialog = store.openAssignUserDialog
@@ -27,6 +33,37 @@ const assignRandomUser = store.assignRandomUser
 onMounted(async () => {
   await userStore.fetchUsers() // Vänta på att användarna ska hämtas
 })
+
+// *** Swipe functionality
+const swipeProgress = ref({})
+const showUndo = ref({})
+
+// When user starts swipe
+const startSwipe = (chore) => {
+  swipeProgress.value[chore.id] = 0
+}
+
+const moveSwipe = (chore, event) => {
+  const moveAmount = event.touches[0].clientX
+  const swipeAmount = moveAmount / window.innerWidth
+  swipeProgress.value[chore.id] = Math.min(swipeAmount * 0.7, 1)
+}
+
+const endSwipe = (chore) => {
+  if (swipeProgress.value[chore.id] > 0.5) {
+    archiveChore(chore) // Archive the chore if the swipe is more than 50%
+    showUndo.value[chore.id] = true
+    setTimeout(() => {
+      showUndo.value[chore.id] = false
+    }, 3000)
+  }
+  swipeProgress.value[chore.id] = 0
+}
+
+const undoArchive = (chore) => {
+  undoArchiveChore(chore)
+  showUndo.value[chore.id] = false
+}
 
 watch(
   () => store.editingChore,
@@ -97,12 +134,35 @@ const handleSubmit = async () => {
 
 <template>
   <div class="chores-container">
+    <!-- Undo btn -->
+    <transition-group name="fade" tag="div" class="transition-container">
+      <v-btn
+        v-for="chore in archivedChores.filter((c) => showUndo[c.id])"
+        :key="'undo-' + chore.id"
+        @click="undoArchive(chore)"
+        height="70px"
+        color="red-lighten-3"
+        class="border-lg border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        max-width="400px"
+      >
+        <b>Ångra </b>Ta bort "{{ chore.title }}" ?
+      </v-btn>
+    </transition-group>
+
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn
         v-for="chore in store.sortedChores"
+        :key="chore.id"
+        :style="{
+          transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
+          backgroundColor: swipeProgress[chore.id] > 0 ? '#a5d6a7 !important' : '', // turns green on swipe
+          maxWidth: '400px'
+        }"
         color="blue-lighten-4"
-        class="border-md border-blue rounded-btn black-text custom-btn chores-button d-flex justify-space-between align-center"
-        max-width="400px"
+        class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        @touchstart="startSwipe(chore)"
+        @touchmove="moveSwipe(chore, $event)"
+        @touchend="endSwipe(chore)"
       >
         <div class="chore-info-container d-flex flex-column align-start">
           <span class="black-text">{{ chore.title }}</span>
@@ -118,11 +178,12 @@ const handleSubmit = async () => {
             :style="{
               backgroundColor: getUserColor(chore.assignedTo)
             }"
-            >{{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}</span
           >
-          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black"
-            >mdi-pencil-outline</v-icon
-          >
+            {{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}
+          </span>
+          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black">
+            mdi-pencil-outline
+          </v-icon>
         </div>
       </v-btn>
       <v-dialog
@@ -146,8 +207,9 @@ const handleSubmit = async () => {
                   :style="{
                     backgroundColor: getUserColor(user.name)
                   }"
-                  >{{ user.name.substring(0, 2).toUpperCase() }}</span
                 >
+                  {{ user.name.substring(0, 2).toUpperCase() }}
+                </span>
                 <v-card-text class="assigned-name">{{ user.name }}</v-card-text>
               </div>
               <hr />
@@ -170,7 +232,8 @@ const handleSubmit = async () => {
         <span class="black-text">Ny Syssla</span>
         <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
       </v-btn>
-      <!-- addChoreDialog section-->
+
+      <!-- addChoreDialog section -->
       <v-dialog
         v-model="store.addChoreDialog"
         max-width="400px"
@@ -222,7 +285,8 @@ const handleSubmit = async () => {
                 </div>
               </div>
             </v-card-text>
-            <!--Lägg till button section-->
+
+            <!-- Lägg till button section -->
             <v-card-actions class="justify-center flex-grow-0 mt-5">
               <v-btn
                 color="green"
@@ -273,12 +337,14 @@ const handleSubmit = async () => {
   margin: 0 24px 0.5rem 24px;
   border-radius: 16px;
   height: unset !important;
+
   .v-btn__content {
     .black-text.rounded-btn {
       width: 100%;
     }
   }
 }
+
 :deep(.v-card-actions) {
   padding: 16px 24px !important;
 }
@@ -288,15 +354,15 @@ const handleSubmit = async () => {
   margin-bottom: 1rem;
   width: 90%;
   font-size: 1.1rem;
-}
-
-.chores-button {
-  cursor: unset;
+  transition:
+    background-color 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
 }
 
 .border-purple {
   color: #6a1b9a;
 }
+
 .border-blue {
   color: #0d47a1;
 }
@@ -308,14 +374,17 @@ const handleSubmit = async () => {
 
 .chore-info-container {
   gap: 0.4rem;
+
   .black-text {
     font-size: 1.2rem;
   }
 }
+
 .deadline-container {
   gap: 0.6rem;
   font-size: 0.8rem;
 }
+
 .assignment-brick {
   background-color: #fff;
   border-radius: 50%;
@@ -325,32 +394,50 @@ const handleSubmit = async () => {
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 .assigned-to-dialog {
   .v-card-text {
     padding: 0;
   }
+
   hr {
     color: #000;
     margin: 0.7rem 0;
   }
+
   .assign-container {
     background-color: #fff;
     border-radius: 16px;
     max-width: 95%;
     padding: 1rem;
+
     .assigned-name {
       font-size: 1.4rem;
     }
   }
 }
-.v-messages__message {
-  color: #b00020;
+
+/* Animation add/remove chores */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
 }
-.v-messages {
-  opacity: unset;
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
-.user-container,
-.random-user-container {
-  cursor: pointer;
+
+.transition-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.undo-btn {
+  background-color: pink;
+  color: white;
 }
 </style>
