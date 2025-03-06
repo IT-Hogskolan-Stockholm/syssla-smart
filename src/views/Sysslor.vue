@@ -163,8 +163,8 @@ const handleSubmit = async () => {
         }"
         color="blue-lighten-4"
         class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
-        @touchstart="startSwipe(chore)"
-        @touchmove="moveSwipe(chore, $event)"
+        @touchstart.passive="startSwipe(chore)"
+        @touchmove.passive="moveSwipe(chore, $event)"
         @touchend="endSwipe(chore)"
       >
         <div class="chore-info-container d-flex flex-column align-start">
