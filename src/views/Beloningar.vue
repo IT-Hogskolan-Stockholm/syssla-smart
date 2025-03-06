@@ -7,7 +7,7 @@
         class="border-md border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px"
       >
-        <span class="black-text">Ny Belöning</span>
+        <span class="black-text ml-2 text-body-1">Ny Belöning</span>
         <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
       </v-btn>
 
@@ -32,12 +32,13 @@
                 </div>
               </div>
             </v-card-text>
-            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+            <v-card-text class="flex-grow-0 custom-text-area" style="overflow: visible; padding-bottom: 0">
             <textarea
             v-model="description"
             placeholder="Beskrivning"
             rows="4"
-            cols="50"
+            style="min-height:20px"
+            auto-grow
             ></textarea>
           </v-card-text>
 
@@ -49,7 +50,7 @@
                 min="0"
                 max="100"
                 step="1"
-                class="mc-3 text-center"
+                class="mc-3 text-center custom-text-area"
                 style="max-width: 80px; text-align: center"
                 label="Poäng"
                 hide-details
@@ -65,7 +66,8 @@
                 <v-icon>mdi-chevron-down</v-icon>
               </v-btn>
             </div>
-            <span class="ml-2 font-weight-bold">Poäng</span>
+            <span class="ml-2">Poäng</span>
+            <v-icon class="m1-1" color="yellow darken-2 size=18">mdi-star</v-icon>
             </v-card-text>
 
 
@@ -99,11 +101,30 @@
 
 <script setup>
 import {ref} from 'vue';
-
 import { useChoreStore } from '../stores/ChoreStore';
 
-const points = ref(0)
 const store = useChoreStore()
+const points = ref(0)
+const rewardName = ref('')
+const description = ref('')
+const form = ref(null)
+
+const handleSubmit = async () => {
+  if (!rewardName.value.trim()) return
+
+
+  store.addReward({
+    name:rewardName.value,
+    description: description.value,
+    points: points.value
+  })
+
+  rewardName.value = ''
+  description.value = ''
+  points.value = 0
+
+  store.closeAddRewardDialog()
+}
 
 const increasePoints = () => {
   if (points.value < 100) points.value++
@@ -119,7 +140,7 @@ const openAddRewardDialog = () => {
 
 
 const rules = {
-  required: (value) => !!value || 'Du måste ange en titel'
+  required: (value) => (value?.trim() ? true : "Du måste ange en titel")
 }
 </script>
 
@@ -159,5 +180,12 @@ const rules = {
 
 .border-purple {
   color: #6a1b9a;
+}
+
+.custom-text-area{
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 10px;
+  width: 100px;
 }
 </style>
