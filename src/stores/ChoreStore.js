@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([])
   const archivedChores = ref([])
+  const history = ref([])
 
   const sortedChores = computed(() => {
     return Array.isArray(chores.value)
@@ -28,6 +29,17 @@ export const useChoreStore = defineStore('choreStore', () => {
   }
 
   fetchChores()
+
+  const fetchHistory = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/history')
+      history.value = Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error('Kunde inte hämta sysslor:', error)
+    }
+  }
+
+  fetchHistory()
 
   const addChore = async (title, deadline) => {
     if (editingChore.value) {
@@ -220,6 +232,8 @@ export const useChoreStore = defineStore('choreStore', () => {
     addAssignedUser,
     assignRandomUser,
     archiveChore,
-    undoArchiveChore
+    undoArchiveChore,
+    fetchHistory,
+    history
   }
 })
