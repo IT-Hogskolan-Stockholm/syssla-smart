@@ -7,6 +7,7 @@ const store = useChoreStore()
 const userStore = useUserStore()
 const chores = computed(() => store.chores)
 const archivedChores = computed(() => store.archivedChores)
+const deletedChores = ref({})
 
 const archiveChore = store.archiveChore
 const undoArchiveChore = store.undoArchiveChore
@@ -40,21 +41,38 @@ const startSwipe = (chore) => {
 }
 
 const moveSwipe = (chore, event) => {
-  const moveAmount = event.touches[0].clientX
+  const moveAmount = event.touches[0].clientX - event.touches[0].target.getBoundingClientRect().left
   const swipeAmount = moveAmount / window.innerWidth
-  swipeProgress.value[chore.id] = Math.min(swipeAmount * 0.7, 1)
-}
+  swipeProgress.value[chore.id] = swipeAmount
 
+  // Färga grönt vid högerswipe, rött vid vänsterswipe
+  chore.color = swipeAmount > 0 ? "#a5d6a7" : swipeAmount < 0 ? "#ef5350" : ""
+}
 
 const endSwipe = (chore) => {
   if (swipeProgress.value[chore.id] > 0.5) {
-    archiveChore(chore)  // Archive the chore if the swipe is more than 50%
+    archiveChore(chore)  // Arkivera syssla vid högerswipe
     showUndo.value[chore.id] = true
-    setTimeout(() => {
-      showUndo.value[chore.id] = false
-    }, 3000)
+  } else if (swipeProgress.value[chore.id] < -0.5) {
+    deleteChore(chore)  // Ta bort syssla vid vänsterswipe
   }
+
+  // Återställ swipe-progress
   swipeProgress.value[chore.id] = 0
+}
+
+const deleteChore = (chore) => {
+  deletedChores.value[chore.id] = chore
+  store.chores = store.chores.filter(c => c.id !== chore.id)
+
+  setTimeout(() => {
+    delete deletedChores.value[chore.id]  // Ta bort ångra-knappen efter några sekunder
+  }, 4000)
+}
+
+const undoDelete = (chore) => {
+  store.chores.push(deletedChores.value[chore.id])
+  delete deletedChores.value[chore.id]
 }
 
 const undoArchive = (chore) => {
@@ -144,7 +162,12 @@ const handleSubmit = async () => {
         <b>Ångra </b>Ta bort "{{ chore.title }}" ?
       </v-btn>
     </transition-group>
-
+    <transition-group name="fade">
+      <v-btn v-for="chore in Object.values(deletedChores)" :key="'delete-' + chore.id" @click="undoDelete(chore)"
+        color="red-lighten-3">
+        Ångra radering av "{{ chore.title }}"
+      </v-btn>
+    </transition-group>
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn v-for="chore in store.sortedChores" :key="chore.id" :style="{
         transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
@@ -262,6 +285,7 @@ const handleSubmit = async () => {
 .chores-container,
 .create-chore {
   width: 100%;
+  margin-top: 4rem;
 }
 
 .rounded-btn {
