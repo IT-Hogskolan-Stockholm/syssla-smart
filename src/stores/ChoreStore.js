@@ -165,6 +165,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     assignRandomUser,
     openAddRewardDialog,
     closeAddRewardDialog,
+    addRewardDialog,
     rewards,
     addReward
   }

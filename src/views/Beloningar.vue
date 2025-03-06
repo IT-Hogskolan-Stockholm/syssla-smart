@@ -25,21 +25,23 @@
                 v-model="rewardName"
                 placeholder="Titel"
                 :rules="[rules.required]"
-              >
-            </v-text-field>
+              ></v-text-field>
+
               <div class="v-messages error--text" role="alert">
                 <div class="v-messages__wrapper">
                 </div>
               </div>
             </v-card-text>
+
             <v-card-text class="flex-grow-0 custom-text-area" style="overflow: visible; padding-bottom: 0">
-            <textarea
+
+            <v-textarea
             v-model="description"
             placeholder="Beskrivning"
-            rows="4"
-            style="min-height:20px"
             auto-grow
-            ></textarea>
+            rows="2"
+            class="custom-text-area"
+            ></v-textarea>
           </v-card-text>
 
           <v-card-text class="flex-grow-0 custom-card-text d-flex align-center">
@@ -74,11 +76,8 @@
           <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
                 placeholder="URL till bild (t.ex. Unsplash)"
-              >
-              </v-text-field>
+              ></v-text-field>
             </v-card-text>
-
-
 
             <!--Lägg till button section-->
             <v-card-actions class="justify-center flex-grow-0 mt-5">
@@ -182,10 +181,11 @@ const rules = {
   color: #6a1b9a;
 }
 
-.custom-text-area{
+.custom-text-area {
   background: #f5f5f5;
   border-radius: 4px;
   padding: 10px;
   width: 100px;
+  min-height: 100px;
 }
 </style>
