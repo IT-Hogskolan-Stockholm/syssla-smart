@@ -90,6 +90,25 @@ export const useChoreStore = defineStore('choreStore', () => {
     assignUserDialog.value = false
   }
 
+  const assignRandomUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users')
+      const validUsers = response.data.filter((user) => user.name)
+
+      if (validUsers.length === 0) {
+        console.error('Inga giltiga användare att tilldela')
+        return
+      }
+
+      const randomIndex = Math.floor(Math.random() * validUsers.length)
+      const randomUser = validUsers[randomIndex].name
+
+      addAssignedUser(randomUser)
+    } catch (error) {
+      console.error('Kunde inte hämta användare:', error)
+    }
+  }
+
   const closeAddChoreDialog = () => {
     addChoreDialog.value = false
   }
@@ -138,7 +157,7 @@ export const useChoreStore = defineStore('choreStore', () => {
             console.error('Kunde inte ta bort sysslan från chores:', error)
           }
         }
-      }, 3000)
+      }, 5000)
     }
   }
 
@@ -169,6 +188,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     addChore,
     openAssignUserDialog,
     addAssignedUser,
+    assignRandomUser,
     archiveChore,
     undoArchiveChore
   }

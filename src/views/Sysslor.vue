@@ -52,7 +52,7 @@ const endSwipe = (chore) => {
     showUndo.value[chore.id] = true
     setTimeout(() => {
       showUndo.value[chore.id] = false
-    }, 3000)
+    }, 5000)
   }
   swipeProgress.value[chore.id] = 0
 }
