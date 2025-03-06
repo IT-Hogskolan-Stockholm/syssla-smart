@@ -422,7 +422,7 @@ const handleSubmit = async () => {
     border-radius: 16px;
     max-width: 95%;
     padding: 1rem;
-
+    cursor: pointer;
     .assigned-name {
       font-size: 1.4rem;
     }

@@ -43,37 +43,37 @@
       "id": "2",
       "title": "Städa badrummet",
       "deadline": "2025-03-03",
-      "completedDate": "2025-03-03",
       "assignedTo": "Mamma",
       "isCompleted": true,
-      "pointValue": 1
+      "pointValue": 1,
+      "completedDate": "2025-03-03"
     },
     {
       "id": "3",
       "title": "Handla",
       "deadline": "2025-03-01",
-      "completedDate": "2025-03-01",
       "assignedTo": "Pappa",
       "isCompleted": true,
-      "pointValue": 1
+      "pointValue": 1,
+      "completedDate": "2025-03-01"
     },
     {
       "id": "4",
       "title": "Rensa kylskåpet",
       "deadline": "2025-02-28",
-      "completedDate": "2025-02-28",
       "assignedTo": "Sofia",
       "isCompleted": true,
-      "pointValue": 1
+      "pointValue": 1,
+      "completedDate": "2025-02-28"
     },
     {
       "id": "5",
       "title": "Dammsuga",
       "deadline": "2025-02-27",
-      "completedDate": "2025-02-27",
       "assignedTo": "Algot",
       "isCompleted": true,
-      "pointValue": 1
+      "pointValue": 1,
+      "completedDate": "2025-02-27"
     },
     {
       "id": "6",

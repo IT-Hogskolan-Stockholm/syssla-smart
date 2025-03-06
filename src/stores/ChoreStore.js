@@ -167,10 +167,21 @@ export const useChoreStore = defineStore('choreStore', () => {
       const [restoredChore] = archivedChores.value.splice(index, 1)
       chores.value.push(restoredChore)
 
-      try {
-        await axios.post('http://localhost:3000/chores', restoredChore)
-      } catch (error) {
-        console.error('Kunde inte återställa sysslan:', error)
+      if (restoredChore.assignedTo) {
+        try {
+          const userResponse = await axios.get('http://localhost:3000/users')
+          const users = userResponse.data
+          const user = users.find((u) => u.name === restoredChore.assignedTo)
+
+          if (user) {
+            await axios.patch(`http://localhost:3000/users/${user.id}`, {
+              completedTasks: user.completedTasks - 1,
+              scoreValue: user.scoreValue - restoredChore.pointValue
+            })
+          }
+        } catch (error) {
+          console.error('Kunde inte återställa användarens poäng:', error)
+        }
       }
     }
   }
