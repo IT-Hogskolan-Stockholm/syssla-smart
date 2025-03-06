@@ -166,23 +166,21 @@ export const useChoreStore = defineStore('choreStore', () => {
     if (index !== -1) {
       const [restoredChore] = archivedChores.value.splice(index, 1)
       chores.value.push(restoredChore)
+      const choreId = String(chore.id)
 
-      if (restoredChore.assignedTo) {
-        try {
-          const userResponse = await axios.get('http://localhost:3000/users')
-          const users = userResponse.data
-          const user = users.find((u) => u.name === restoredChore.assignedTo)
-
-          if (user) {
-            await axios.patch(`http://localhost:3000/users/${user.id}`, {
-              completedTasks: user.completedTasks - 1,
-              scoreValue: user.scoreValue - restoredChore.pointValue
-            })
-          }
-        } catch (error) {
-          console.error('Kunde inte återställa användarens poäng:', error)
+      try {
+        const historyResponse = await axios.get('http://localhost:3000/history')
+        const historyItem = historyResponse.data.find((h) => String(h.id) === choreId)
+        if (historyItem) {
+          await axios.delete(`http://localhost:3000/history/${historyItem.id}`)
+        } else {
+          console.warn(`Syssla med id ${choreId} hittades inte i historiken!`)
         }
+      } catch (error) {
+        console.error('Kunde inte ta bort sysslan från historiken:', error)
       }
+    } else {
+      console.warn(`Syssla med id ${chore.id} hittades inte!`)
     }
   }
 
