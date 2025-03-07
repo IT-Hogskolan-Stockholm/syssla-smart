@@ -85,6 +85,7 @@ header {
     rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
   position: sticky;
   top: 0;
+  margin-bottom: 2rem;
 }
 
 #avatar {
