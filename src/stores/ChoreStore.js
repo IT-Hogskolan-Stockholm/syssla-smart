@@ -52,12 +52,35 @@ export const useChoreStore = defineStore('choreStore', () => {
       return new Date(a.deadline) - new Date(b.deadline)
     })
   })
-
+  const rewards = ref([])
+  const addRewardDialog = ref(false)
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
   const editingChore = ref(null)
   const userStore = useUserStore()
+
+  const addReward = (reward) => {
+    if (!reward.name.trim()) return
+
+
+    rewards.value.push({
+      id: rewards.value.length + 1,
+      name: reward.name,
+      description: reward.description,
+      points: reward.points
+
+    })
+  }
+
+  const openAddRewardDialog = () => {
+    console.log('Opening add reward dialog')
+    addRewardDialog.value = true
+  }
+  const closeAddRewardDialog = () => {
+    console.log('Closing add reward dialog')
+    addRewardDialog.value = false
+  }
 
   const openAddChoreDialog = () => {
     console.log('Opening add chore dialog.')
@@ -78,8 +101,8 @@ export const useChoreStore = defineStore('choreStore', () => {
     assignUserDialog.value = false
   }
 
-  const addChore = (choreTitle, selectedDate) => {
-    console.log('Adding chore:', choreTitle, 'Date:', selectedDate)
+  const addChore = (choreTitle, selectedDate, rewardPoints) => {
+    console.log('Adding chore:', choreTitle, 'Date:', selectedDate, 'Points:', rewardPoints)
     if (!choreTitle.trim()) {
       console.warn('Chore title is empty, stopping function.')
       return
@@ -92,6 +115,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       if (choreIndex !== -1) {
         chores.value[choreIndex].title = choreTitle
         chores.value[choreIndex].deadline = selectedDate
+        chores.value[choreIndex].pointValue = rewardPoints
         console.log('Chore updated:', chores.value[choreIndex])
       }
     } else {
@@ -102,7 +126,7 @@ export const useChoreStore = defineStore('choreStore', () => {
         deadline: selectedDate || '',
         assignedTo: '',
         isCompleted: false,
-        pointValue: null
+        pointValue: rewardPoints
       })
       console.log('Updated chores list:', chores.value)
     }
@@ -159,6 +183,11 @@ export const useChoreStore = defineStore('choreStore', () => {
     sortedChores,
     assignRandomUser,
     archiveChore,
-    undoArchiveChore
+    undoArchiveChore,
+    openAddRewardDialog,
+    closeAddRewardDialog,
+    addRewardDialog,
+    rewards,
+    addReward
   }
 })
