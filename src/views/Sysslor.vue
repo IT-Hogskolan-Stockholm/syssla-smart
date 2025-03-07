@@ -291,15 +291,10 @@ const isOverdue = (deadline) => {
                 placeholder="Titel"
                 :rules="[rules.required]"
               ></v-text-field>
-              <v-text-field
-                v-model="rewardPoints"
-                placeholder="Poäng"
-                type="number"
-                class="mt-4"
-              ></v-text-field>
+              <v-text-field v-model="rewardPoints" placeholder="Poäng" type="number"></v-text-field>
 
               <!-- Date Picker -->
-              <div class="d-flex justify-space-between align-center mt-4">
+              <div class="d-flex justify-space-between align-center">
                 <div class="flex-grow">
                   <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
                 </div>
