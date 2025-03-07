@@ -52,12 +52,35 @@ export const useChoreStore = defineStore('choreStore', () => {
       return new Date(a.deadline) - new Date(b.deadline)
     })
   })
-
+  const rewards = ref([])
+  const addRewardDialog = ref(false)
   const addChoreDialog = ref(false)
   const assignUserDialog = ref(false)
   const selectedChoreId = ref(null)
   const editingChore = ref(null)
   const userStore = useUserStore()
+
+  const addReward = (reward) => {
+    if (!reward.name.trim()) return
+
+
+    rewards.value.push({
+      id: rewards.value.length + 1,
+      name: reward.name,
+      description: reward.description,
+      points: reward.points
+
+    })
+  }
+
+  const openAddRewardDialog = () => {
+    console.log('Opening add reward dialog')
+    addRewardDialog.value = true
+  }
+  const closeAddRewardDialog = () => {
+    console.log('Closing add reward dialog')
+    addRewardDialog.value = false
+  }
 
   const openAddChoreDialog = () => {
     console.log('Opening add chore dialog.')
@@ -159,6 +182,11 @@ export const useChoreStore = defineStore('choreStore', () => {
     sortedChores,
     assignRandomUser,
     archiveChore,
-    undoArchiveChore
+    undoArchiveChore,
+    openAddRewardDialog,
+    closeAddRewardDialog,
+    addRewardDialog,
+    rewards,
+    addReward
   }
 })
