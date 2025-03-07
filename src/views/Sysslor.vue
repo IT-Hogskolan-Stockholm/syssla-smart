@@ -167,7 +167,6 @@ const isOverdue = (deadline) => {
         color="red-lighten-3"
         class="border-lg border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px"
-
       >
         <b>Ångra </b>Ta bort "{{ chore.title }}" ?
       </v-btn>
@@ -184,17 +183,13 @@ const isOverdue = (deadline) => {
     </transition-group>
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn
-
         v-for="chore in store.sortedChores"
-
         :key="chore.id"
-
         :style="{
-            transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
-            backgroundColor: swipeProgress[chore.id] > 0 ? '#a5d6a7 !important' : '', // turns green on swipe
-            maxWidth: '400px'
-          }"
-
+          transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
+          backgroundColor: swipeProgress[chore.id] > 0 ? '#a5d6a7 !important' : '', // turns green on swipe
+          maxWidth: '400px'
+        }"
         :color="isOverdue(chore.deadline) ? 'red-lighten-2' : 'blue-lighten-4'"
         class="border-md rounded-btn black-text custom-btn d-flex justify-space-between align-center chore-button"
         :class="{
@@ -202,11 +197,8 @@ const isOverdue = (deadline) => {
           'border-blue': !isOverdue(chore.deadline)
         }"
         @touchstart="startSwipe(chore)"
-
         @touchmove="moveSwipe(chore, $event)"
-
         @touchend="endSwipe(chore)"
-
       >
         <div class="chore-info-container d-flex flex-column align-start">
           <span class="black-text">{{ chore.title }}</span>
@@ -217,19 +209,11 @@ const isOverdue = (deadline) => {
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
           <span
-
-
             @click="openAssignUserDialog(chore)"
-
-
             class="assignment-brick d-flex justify-center align-center"
-
-
             :style="{
-                  backgroundColor: getUserColor(chore.assignedTo)
-                }"
-
-
+              backgroundColor: getUserColor(chore.assignedTo)
+            }"
           >
             {{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}
           </span>
@@ -246,50 +230,26 @@ const isOverdue = (deadline) => {
         </div>
       </v-btn>
       <v-dialog
-
-
         v-model="assignUserDialog"
-
-
         max-width="400px"
-
-
         :content-class="'auto-height-dialog'"
         class="assigned-to-dialog d-flex align-center"
-
-
       >
         <div class="assign-container">
           <template v-for="(user, index) in userStore.users">
             <v-card-text
-
-
               v-if="user.name"
-
-
               @click="addAssignedUser(user.name)"
-
-
               class="flex-grow-0"
               style="overflow: visible"
-
-
               :key="user.id"
-
-
             >
               <div class="user-container d-flex flex-row justify-center align-center">
                 <span
-
-
                   class="assignment-brick d-flex justify-center align-center mr-6"
-
-
                   :style="{
-                        backgroundColor: getUserColor(user.name)
-                      }"
-
-
+                    backgroundColor: getUserColor(user.name)
+                  }"
                 >
                   {{ user.name.substring(0, 2).toUpperCase() }}
                 </span>
@@ -300,8 +260,6 @@ const isOverdue = (deadline) => {
           </template>
           <div class="random-user-container d-flex flex-row" @click="assignRandomUser">
             <v-icon size="36">mdi-dice-multiple</v-icon
-
-
             ><span class="assigned-name ml-6">Slumpa användare</span>
           </div>
         </div>
@@ -309,16 +267,10 @@ const isOverdue = (deadline) => {
     </section>
     <section class="create-new-section d-flex justify-center flex-column align-center">
       <v-btn
-
-
         @click="openAddChoreDialog"
-
-
         color="purple-lighten-4"
         class="border-md border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px"
-
-
       >
         <span class="black-text">Ny Syssla</span>
         <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
@@ -326,34 +278,18 @@ const isOverdue = (deadline) => {
 
       <!-- addChoreDialog section -->
       <v-dialog
-
-
         v-model="store.addChoreDialog"
-
-
         max-width="400px"
-
-
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
-
-
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
           <v-form ref="form">
             <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
-
-
                 v-model="choreName"
-
-
                 placeholder="Titel"
-
-
                 :rules="[rules.required]"
-
-
               ></v-text-field>
               <v-text-field
                 v-model="rewardPoints"
@@ -369,24 +305,12 @@ const isOverdue = (deadline) => {
                 </div>
                 <div>
                   <v-menu
-
-
                     v-model="menu"
-
-
                     :close-on-content-click="false"
-
-
                     transition="scale-transition"
-
-
                     offset-y
                     :attach="true"
-
-
                     content-class="date-picker-popup"
-
-
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn v-bind="attrs" @click="menu = true" icon>
@@ -395,18 +319,10 @@ const isOverdue = (deadline) => {
                     </template>
                     <v-card>
                       <v-date-picker
-
-
                         :hide-header="true"
-
-
                         v-model="selectedDate"
-
-
                         @update:modelValue="updateDate"
                         no-title
-
-
                       ></v-date-picker>
                     </v-card>
                   </v-menu>
@@ -422,23 +338,11 @@ const isOverdue = (deadline) => {
             <!-- Lägg till button section -->
             <v-card-actions class="justify-center flex-grow-0 mt-5">
               <v-btn
-
-
                 color="green"
-
-
                 @click="handleSubmit(choreName, formattedDate)"
-
-
                 size="large"
-
-
                 class="add-btn"
-
-
                 block
-
-
               >
                 <span class="black-text rounded-btn">{{
                   store.editingChore ? 'Ändra' : 'Lägg Till'
@@ -501,11 +405,7 @@ const isOverdue = (deadline) => {
   width: 90%;
   font-size: 1.1rem;
   transition:
-
-
     background-color 0.3s ease-in-out,
-
-
     transform 0.3s ease-in-out;
 }
 
