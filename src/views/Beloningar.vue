@@ -34,10 +34,10 @@ const score = ref(algotScoreValue)
           class="w-75"
         ></v-progress-linear>
 
-        <v-chip class="star-chip">
-          <v-icon color="yellow darken-2">mdi-star</v-icon>
-          <span class="ml-1">15</span>
-        </v-chip>
+        <div class="star-points">
+          <v-icon color="yellow" size="42">mdi-star</v-icon>
+          <span class="star-number">15</span>
+        </div>
       </v-card-actions>
     </v-card>
   </div>
@@ -55,5 +55,23 @@ const score = ref(algotScoreValue)
   border: 2px solid gold;
   font-size: 16px;
   font-weight: bold;
+}
+.star-points {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 215px;
+  margin-top: -35px;
+}
+
+.star-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: rgb(0, 0, 0);
+  font-size: 14px;
 }
 </style>
