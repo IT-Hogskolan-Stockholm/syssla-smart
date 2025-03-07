@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { useChoreStore } from '../stores/ChoreStore'
 import { useUserStore } from '../stores/UserStore'
 
@@ -9,6 +9,7 @@ const chores = computed(() => store.chores)
 const archivedChores = computed(() => store.archivedChores)
 const archiveChore = store.archiveChore
 const undoArchiveChore = store.undoArchiveChore
+const deleteChore = store.deleteChore
 const addChoreDialog = computed({
   get: () => store.addChoreDialog,
   set: (value) => (store.addChoreDialog = value)
@@ -33,28 +34,55 @@ onMounted(async () => {
   await userStore.fetchUsers()
 })
 
-const swipeProgress = ref({})
+const swipeProgress = reactive({})
+const swipeStartX = reactive({})
+const swipeDirection = reactive({})
 const showUndo = ref({})
 
-const startSwipe = (chore) => {
-  swipeProgress.value[chore.id] = 0
+const startSwipe = (event, chore) => {
+  if (!event.touches) return
+
+  // Se till att nyckeln finns i objektet innan vi tilldelar ett värde
+  if (!swipeProgress[chore.id]) {
+    swipeProgress[chore.id] = 0
+  }
+
+  swipeStartX[chore.id] = event.touches[0].clientX
+  swipeDirection[chore.id] = null
 }
 
-const moveSwipe = (chore, event) => {
+const moveSwipe = (event, chore) => {
+  if (!event.touches || !swipeStartX[chore.id]) return
+
   const moveAmount = event.touches[0].clientX
-  const swipeAmount = moveAmount / window.innerWidth
-  swipeProgress.value[chore.id] = Math.min(swipeAmount * 0.7, 1)
+  const deltaX = moveAmount - swipeStartX[chore.id]
+
+  swipeDirection[chore.id] = deltaX > 0 ? 'right' : 'left'
+
+  // Se till att progress har ett startvärde
+  if (!swipeProgress[chore.id]) {
+    swipeProgress[chore.id] = 0
+  }
+
+  swipeProgress[chore.id] = Math.max(-1, Math.min(1, deltaX / window.innerWidth))
 }
 
 const endSwipe = (chore) => {
-  if (swipeProgress.value[chore.id] > 0.5) {
-    archiveChore(chore) // Archive the chore if the swipe is more than 50%
-    showUndo.value[chore.id] = true
-    setTimeout(() => {
-      showUndo.value[chore.id] = false
-    }, 5000)
+  if (swipeProgress[chore.id] === undefined) return
+
+  const direction = swipeDirection[chore.id]
+  if (Math.abs(swipeProgress[chore.id]) > 0.2) {
+    if (direction === 'right') {
+      archiveChore(chore)
+    } else if (direction === 'left') {
+      deleteChore(chore)
+    }
   }
-  swipeProgress.value[chore.id] = 0
+
+  // Återställ progress med en timeout för animationen
+  setTimeout(() => {
+    swipeProgress[chore.id] = 0
+  }, 200)
 }
 
 const undoArchive = (chore) => {
@@ -157,14 +185,20 @@ const handleSubmit = async () => {
         v-for="chore in store.sortedChores"
         :key="chore.id"
         :style="{
-          transform: `translateX(${swipeProgress[chore.id] * 100}%)`,
-          backgroundColor: swipeProgress[chore.id] > 0 ? '#a5d6a7 !important' : '', // turns green on swipe
+          transform: `translateX(${(swipeProgress[chore.id] || 0) * 100}%)`,
+          transition: 'transform 0.3s ease-out',
+          backgroundColor:
+            swipeProgress[chore.id] > 0
+              ? '#a5d6a7 !important'
+              : swipeProgress[chore.id] < 0
+                ? '#ef9a9a !important'
+                : '',
           maxWidth: '400px'
         }"
         color="blue-lighten-4"
         class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
-        @touchstart.passive="startSwipe(chore)"
-        @touchmove.passive="moveSwipe(chore, $event)"
+        @touchstart="startSwipe($event, chore)"
+        @touchmove="moveSwipe($event, chore)"
         @touchend="endSwipe(chore)"
       >
         <div class="chore-info-container d-flex flex-column align-start">
@@ -367,8 +401,8 @@ const handleSubmit = async () => {
   width: 90%;
   font-size: 1.1rem;
   transition:
-    background-color 0.3s ease-in-out,
-    transform 0.3s ease-in-out;
+    transform 0.2s ease-out,
+    background-color 0.2s ease-in-out;
 }
 
 .border-purple {

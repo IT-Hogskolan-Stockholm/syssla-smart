@@ -1,8 +1,12 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { useUserStore } from '../stores/UserStore'
 import Sync from '../components/Sync.vue'
 
 const menuOpen = ref(false)
+const userStore = useUserStore()
+const currentUser = computed(() => userStore.users.find((user) => user.name === 'Algot'))
+
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
 }
@@ -13,6 +17,7 @@ const closeMenu = (event) => {
 }
 onMounted(() => {
   document.addEventListener('click', closeMenu)
+  userStore.fetchUsers()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('click', closeMenu)
@@ -39,7 +44,7 @@ onBeforeUnmount(() => {
         </div>
         <div id="user-score" class="d-flex align-center">
           <v-icon class="yellow-text star-icon" size="30" color="yellow">mdi-star</v-icon>
-          <span>12 poäng</span>
+          <span>{{ currentUser?.scoreValue || 0 }} poäng</span>
         </div>
         <div id="menu-content" class="d-flex-column">
           <div id="menu-category" class="py-5 d-flex align-center">

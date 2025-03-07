@@ -217,6 +217,19 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
   }
 
+  const deleteChore = async (chore) => {
+    const index = chores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      chores.value.splice(index, 1)
+
+      try {
+        await axios.delete(`http://localhost:3000/chores/${chore.id}`)
+      } catch (error) {
+        console.error('Kunde inte ta bort sysslan från chores:', error)
+      }
+    }
+  }
+
   return {
     chores,
     archivedChores,
@@ -233,6 +246,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     assignRandomUser,
     archiveChore,
     undoArchiveChore,
+    deleteChore,
     fetchHistory,
     history
   }
