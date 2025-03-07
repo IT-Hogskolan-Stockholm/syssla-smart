@@ -67,7 +67,10 @@
             </v-card-text>
 
             <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
-              <v-text-field placeholder="URL till bild (t.ex. Unsplash)"></v-text-field>
+              <v-text-field
+                v-model="imageUrl"
+                placeholder="URL till bild (t.ex. Unsplash)"
+              ></v-text-field>
             </v-card-text>
 
             <!--Lägg till button section-->
@@ -86,18 +89,21 @@
         </v-card>
       </v-dialog>
     </section>
+    <beloningCard />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useChoreStore } from '../stores/ChoreStore'
+import beloningCard from '../components/beloningCard.vue'
 
 const store = useChoreStore()
 const points = ref(0)
 const rewardName = ref('')
 const description = ref('')
 const form = ref(null)
+const imageUrl = ref('')
 
 const handleSubmit = async () => {
   if (!rewardName.value.trim()) return
@@ -105,12 +111,14 @@ const handleSubmit = async () => {
   store.addReward({
     name: rewardName.value,
     description: description.value,
-    points: points.value
+    points: points.value,
+    imageUrl: imageUrl.value
   })
 
   rewardName.value = ''
   description.value = ''
   points.value = 0
+  imageUrl.value = ''
 
   store.closeAddRewardDialog()
 }

@@ -63,13 +63,12 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addReward = (reward) => {
     if (!reward.name.trim()) return
 
-
     rewards.value.push({
       id: rewards.value.length + 1,
       name: reward.name,
       description: reward.description,
-      points: reward.points
-
+      points: reward.points,
+      imageUrl: reward.imageUrl
     })
   }
 
