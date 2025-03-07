@@ -21,7 +21,7 @@ export const useUserStore = defineStore('userStore', () => {
       id: 3,
       name: 'Algot',
       color: '#039BE5',
-      scoreValue: 1,
+      scoreValue: 12,
       completedTasks: 0
     },
     {

@@ -1,4 +1,15 @@
-<script setup></script>
+<script setup>
+import { useUserStore } from '../stores/UserStore'
+import { computed } from 'vue'
+import { ref } from 'vue'
+
+const userStore = useUserStore()
+const algotScoreValue = computed(() => {
+  const algot = userStore.users.find((user) => user.name === 'Algot')
+  return algot ? algot.scoreValue : 0
+})
+const score = ref(algotScoreValue)
+</script>
 
 <template>
   <div>
@@ -15,7 +26,8 @@
 
       <v-card-actions class="d-flex flex-column align-center">
         <v-progress-linear
-          model-value="75"
+          max="15"
+          v-model="score"
           height="10"
           rounded
           color="blue lighten-2"
