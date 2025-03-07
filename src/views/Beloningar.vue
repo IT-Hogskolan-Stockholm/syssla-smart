@@ -33,12 +33,11 @@
               </div>
             </v-card-text>
 
-            <v-card-text class="flex-grow-0 custom-text-area" style="overflow: visible; padding-bottom: 0">
+            <v-card-text class="flex-grow-0 " style="overflow: visible; padding-bottom: 0">
 
             <v-textarea
             v-model="description"
             placeholder="Beskrivning"
-            auto-grow
             rows="2"
             class="custom-text-area"
             ></v-textarea>
@@ -52,7 +51,7 @@
                 min="0"
                 max="100"
                 step="1"
-                class="mc-3 text-center custom-text-area"
+                class="mc-3 text-center "
                 style="max-width: 80px; text-align: center"
                 label="Poäng"
                 hide-details
@@ -185,7 +184,9 @@ const rules = {
   background: #f5f5f5;
   border-radius: 4px;
   padding: 10px;
-  width: 100px;
-  min-height: 100px;
+  width: 300px;
+  min-height: 300px;
+  max-width: 500px;
+  max-height: 250px
 }
 </style>
