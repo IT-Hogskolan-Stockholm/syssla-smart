@@ -63,13 +63,23 @@ export const useChoreStore = defineStore('choreStore', () => {
   const addReward = (reward) => {
     if (!reward.name.trim()) return
 
-    rewards.value.push({
-      id: rewards.value.length + 1,
-      name: reward.name,
-      description: reward.description,
-      points: reward.points,
-      imageUrl: reward.imageUrl
-    })
+    if (rewards.value.length < 1) {
+      rewards.value.push({
+        id: rewards.value.length + 1,
+        name: reward.name,
+        description: reward.description,
+        points: reward.points,
+        imageUrl: reward.imageUrl
+      })
+    } else {
+      rewards.value[0] = {
+        id: rewards.value.length + 1,
+        name: reward.name,
+        description: reward.description,
+        points: reward.points,
+        imageUrl: reward.imageUrl
+      }
+    }
   }
 
   const openAddRewardDialog = () => {
@@ -78,6 +88,7 @@ export const useChoreStore = defineStore('choreStore', () => {
   }
   const closeAddRewardDialog = () => {
     console.log('Closing add reward dialog')
+    console.log(rewards.value)
     addRewardDialog.value = false
   }
 
