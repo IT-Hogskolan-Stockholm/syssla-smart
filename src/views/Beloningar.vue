@@ -50,7 +50,7 @@ const rules = {
         class="border-md border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px">
         <span class="black-text ml-2">Ny Belöning</span>
-        <v-icon class="ml-7 black-text custom-icon" style=" padding-left:7.5rem" color="black">mdi-plus</v-icon>
+        <v-icon class="ml-7 black-text custom-icon" color="black">mdi-plus</v-icon>
       </v-btn>
 
       <v-dialog v-model="store.addRewardDialog" max-width="400px" :content-class="'auto-height-dialog'"
@@ -62,7 +62,6 @@ const rules = {
               <v-card-text class="flex-grow-0 title-card" style="overflow: visible;  padding-bottom: 0">
                 <v-text-field class="text" variant="outlined" v-model="rewardName" placeholder="Titel"
                   :rules="[rules.required]"></v-text-field>
-
                 <div class="v-messages error--text" role="alert">
                   <div class="v-messages__wrapper">
                   </div>
@@ -83,10 +82,10 @@ const rules = {
 
                   <div class="d-flex flex-column align-center mx-2">
 
-                    <v-btn class="point-arrow" icon @click="increasePoints">
+                    <v-btn variant="flat" class="point-arrow" icon @click="increasePoints">
                       <v-icon>mdi-triangle</v-icon>
                     </v-btn>
-                    <v-btn class="point-arrow" icon @click="decreasePoints">
+                    <v-btn variant="flat" class="point-arrow" icon @click="decreasePoints">
                       <v-icon>mdi-triangle-down</v-icon>
                     </v-btn>
                   </div>
@@ -138,6 +137,13 @@ const rules = {
   color: black;
 }
 
+.points-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: red;
+}
+
 .input-points {
   display: flex;
   justify-content: center;
@@ -180,21 +186,30 @@ const rules = {
 .star {
   font-size: 30px;
   padding-left: 1rem;
+
 }
 
 .points {
   padding-left: 1rem;
   font-size: 20px;
+  justify-content: center;
+  align-items: center;
+
 }
 
 .custom-btn {
   padding: 2rem 1rem;
   width: 90vw;
   font-size: 1.2rem;
-  /* ikonen */
+  position: relative;
 }
 
-.border-purple {
-  color: #6a1b9a;
+.custom-btn span {
+  flex-grow: 1;
+}
+
+.custom-icon {
+  position: absolute;
+  right: 1.5rem;
 }
 </style>
