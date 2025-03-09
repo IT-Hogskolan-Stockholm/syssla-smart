@@ -6,6 +6,7 @@ export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([])
   const archivedChores = ref([])
   const history = ref([])
+  const rewards = ref([])
 
   const sortedChores = computed(() => {
     return Array.isArray(chores.value)
@@ -41,15 +42,28 @@ export const useChoreStore = defineStore('choreStore', () => {
 
   fetchHistory()
 
-  const addChore = async (title, deadline) => {
+  const fetchRewards = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/rewards')
+      rewards.value = Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error('Kunde inte hämta sysslor:', error)
+    }
+  }
+
+  fetchRewards()
+
+  const addChore = async (title, deadline, pointValue) => {
     if (editingChore.value) {
       try {
         await axios.patch(`http://localhost:3000/chores/${editingChore.value.id}`, {
           title,
-          deadline
+          deadline,
+          pointValue
         })
         editingChore.value.title = title
         editingChore.value.deadline = deadline
+        editingChore.value.pointValue = pointValue
       } catch (error) {
         console.error('Kunde inte uppdatera sysslan:', error)
       }
@@ -64,7 +78,7 @@ export const useChoreStore = defineStore('choreStore', () => {
         deadline,
         assignedTo: '',
         isCompleted: false,
-        pointValue: 1
+        pointValue
       }
       try {
         await axios.post('http://localhost:3000/chores', newChore)
@@ -230,6 +244,25 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
   }
 
+  const addReward = async (name, description, pointsCost, imgSrc = '') => {
+    try {
+      const highestId =
+        rewards.value.length > 0 ? Math.max(...rewards.value.map((reward) => reward.id)) : 0
+      const newId = (highestId + 1).toString()
+      const newReward = {
+        id: newId,
+        name,
+        description,
+        pointsCost,
+        imgSrc
+      }
+      await axios.post('http://localhost:3000/rewards', newReward)
+      rewards.value.push(newReward)
+    } catch (error) {
+      console.error('Kunde inte skapa belöningen:', error)
+    }
+  }
+
   return {
     chores,
     archivedChores,
@@ -248,6 +281,9 @@ export const useChoreStore = defineStore('choreStore', () => {
     undoArchiveChore,
     deleteChore,
     fetchHistory,
-    history
+    history,
+    fetchRewards,
+    rewards,
+    addReward
   }
 })

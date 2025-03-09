@@ -41,25 +41,18 @@ const showUndo = ref({})
 
 const startSwipe = (event, chore) => {
   if (!event.touches) return
-
-  // Se till att nyckeln finns i objektet innan vi tilldelar ett värde
   if (!swipeProgress[chore.id]) {
     swipeProgress[chore.id] = 0
   }
-
   swipeStartX[chore.id] = event.touches[0].clientX
   swipeDirection[chore.id] = null
 }
 
 const moveSwipe = (event, chore) => {
   if (!event.touches || !swipeStartX[chore.id]) return
-
   const moveAmount = event.touches[0].clientX
   const deltaX = moveAmount - swipeStartX[chore.id]
-
   swipeDirection[chore.id] = deltaX > 0 ? 'right' : 'left'
-
-  // Se till att progress har ett startvärde
   if (!swipeProgress[chore.id]) {
     swipeProgress[chore.id] = 0
   }
@@ -69,7 +62,6 @@ const moveSwipe = (event, chore) => {
 
 const endSwipe = (chore) => {
   if (swipeProgress[chore.id] === undefined) return
-
   const direction = swipeDirection[chore.id]
   if (Math.abs(swipeProgress[chore.id]) > 0.2) {
     if (direction === 'right') {
@@ -78,8 +70,6 @@ const endSwipe = (chore) => {
       deleteChore(chore)
     }
   }
-
-  // Återställ progress med en timeout för animationen
   setTimeout(() => {
     swipeProgress[chore.id] = 0
   }, 200)

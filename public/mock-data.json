@@ -29,6 +29,15 @@
       "completedTasks": 1
     }
   ],
+  "rewards": [
+    {
+      "id": "1",
+      "name": "Pizzakväll",
+      "description": "Lorem ipsum dolor sit amet.",
+      "pointsCost": 15,
+      "imgSrc": ""
+    }
+  ],
   "history": [
     {
       "id": "1",
