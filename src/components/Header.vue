@@ -26,7 +26,9 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="d-flex justify-space-between align-center">
-    <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
+    <router-link to="/">
+      <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
+    </router-link>
     <div id="user" class="d-flex">
       <img id="avatar" src="../assets/avatarIcon.svg" alt="User icon" @click.stop="toggleMenu" />
       <v-overlay
@@ -48,20 +50,24 @@ onBeforeUnmount(() => {
         </div>
         <div id="menu-content" class="d-flex-column">
           <div id="menu-category" class="py-5 d-flex align-center">
+            <v-icon class="black-text" size="30" color="black">mdi-home</v-icon>
+            <router-link class="menu-links" to="/">Hem</router-link>
+          </div>
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-trophy-variant</v-icon>
-            <span>Belöningar</span>
+            <router-link class="menu-links" to="/beloningar">Belöningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-history</v-icon>
-            <span>Historik</span>
+            <router-link class="menu-links" to="/historik">Historik</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-cog</v-icon>
-            <span>Inställningar</span>
+            <router-link class="menu-links" to="/installningar">Inställningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-sync</v-icon>
-            <span><sync /></span>
+            <Sync />
           </div>
           <div id="theme-toggle" class="py-5">
             <v-switch label="Tema" inset @click.stop></v-switch>
@@ -74,11 +80,6 @@ onBeforeUnmount(() => {
       </nav>
     </div>
   </header>
-  <div id="view-nav" class="py-2 d-flex ga-4">
-    <router-link to="/sysslor">Sysslor</router-link>
-    <router-link to="/beloningar">Belöningar</router-link>
-    <router-link to="/historik">Historik</router-link>
-  </div>
 </template>
 
 <style scoped>
@@ -138,15 +139,20 @@ header {
   border-style: solid;
   border-bottom-color: rgba(34, 37, 41, 0.25);
 }
-#menu-category span {
+
+#menu-category .menu-links {
+  color: black !important;
   font-size: 1.25rem;
-  color: black;
-  padding-left: 0.5rem;
+  padding-left: 1rem;
 }
+
 ::v-deep(.v-label) {
   font-size: 1.25rem !important;
   color: black !important;
+  padding-left: 1rem;
+  font-weight: 500;
 }
+
 #menu-footer {
   padding: 0.625rem;
   position: absolute;

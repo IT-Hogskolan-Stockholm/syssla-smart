@@ -37,9 +37,7 @@ const resetDialog = () => {
 <template>
   <v-dialog max-width="500" @update:model-value="resetDialog">
     <template v-slot:activator="{ props: activatorProps }">
-      <a v-bind="activatorProps" style="color: black; font-weight: 400"
-        ><span>Synka hushåll</span></a
-      >
+      <a v-bind="activatorProps" class="menu-links">Synka hushåll</a>
     </template>
 
     <template v-slot:default>
@@ -99,3 +97,12 @@ const resetDialog = () => {
     </template>
   </v-dialog>
 </template>
+
+<style scoped>
+.menu-links {
+  color: black !important;
+  font-size: 1.25rem;
+  padding-left: 1rem;
+  cursor: pointer;
+}
+</style>
