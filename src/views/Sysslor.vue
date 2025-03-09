@@ -161,6 +161,11 @@ const handleSubmit = async () => {
     dateError.value = null
   }
 }
+const isOverdue = (deadline) => {
+  if (!deadline) return false
+  const today = new Date().toISOString().split('T')[0]
+  return deadline < today
+}
 </script>
 
 <template>
@@ -195,8 +200,12 @@ const handleSubmit = async () => {
                 : '',
           maxWidth: '400px'
         }"
-        color="blue-lighten-4"
-        class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        :color="isOverdue(chore.deadline) ? 'red-lighten-2' : 'blue-lighten-4'"
+        class="border-md border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center chore-button"
+        :class="{
+          'overdue-border': isOverdue(chore.deadline),
+          'border-blue': !isOverdue(chore.deadline)
+        }"
         @touchstart="startSwipe($event, chore)"
         @touchmove="moveSwipe($event, chore)"
         @touchend="endSwipe(chore)"
@@ -222,6 +231,9 @@ const handleSubmit = async () => {
             mdi-pencil-outline
           </v-icon>
         </div>
+        <span class="alert-icon" v-if="isOverdue(chore.deadline)">
+          <v-icon color="#8b0000" size="28">mdi-alert-circle</v-icon>
+        </span>
       </v-btn>
       <v-dialog
         v-model="assignUserDialog"
@@ -461,6 +473,36 @@ const handleSubmit = async () => {
       font-size: 1.4rem;
     }
   }
+}
+
+.overdue-border {
+  border: 5px solid #b71c1c !important;
+}
+
+::v-deep(.bg-red-lighten-2) {
+  color: #000 !important;
+}
+
+.chore-button {
+  position: relative;
+}
+
+.alert-icon {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  z-index: 1;
+  background: #ffebee;
+  border-radius: 50%;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.alert-icon {
+  transition: transform 0.2s ease;
+}
+.alert-icon:hover {
+  transform: scale(1.1);
 }
 
 /* Animation add/remove chores */
