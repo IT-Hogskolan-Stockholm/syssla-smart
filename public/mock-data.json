@@ -32,10 +32,10 @@
   "rewards": [
     {
       "id": "1",
-      "name": "Pizzakväll",
-      "description": "Lorem ipsum dolor sit amet.",
+      "name": "Pizzakväll!",
+      "description": "En utekväll för hela familjen där vi går ut på La Luna och äter pizza!",
       "pointsCost": 15,
-      "imgSrc": ""
+      "imgSrc": "https://raw.githubusercontent.com/IT-Hogskolan-Stockholm/syssla-smart/ee2a78374b0071a8f1ac941e9c318e752a6c6f3f/src/assets/pizza.jpeg"
     }
   ],
   "history": [

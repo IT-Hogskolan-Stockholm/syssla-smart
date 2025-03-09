@@ -95,11 +95,14 @@ header {
     rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
   position: sticky;
   top: 0;
+  margin-bottom: 2rem;
 }
+
 #avatar {
   height: 3rem;
   cursor: pointer;
 }
+
 #menu {
   background-color: #fff;
   width: 20rem;
@@ -111,26 +114,33 @@ header {
   transition: transform 0.5s ease-in-out;
   z-index: 10;
 }
+
 #menu.open {
   transform: translateX(0);
 }
+
 #menu-header {
   padding: 0.625rem;
 }
+
 #avatar-menu {
   height: 3rem;
 }
+
 #user-score {
   padding: 1.25rem;
 }
+
 #user-score span {
   font-size: 1.25rem;
   color: black;
   padding-left: 0.5rem;
 }
+
 #menu-content {
   padding: 1.25rem;
 }
+
 #menu-category {
   border-left-width: 0px;
   border-top-width: 0px;
@@ -143,6 +153,7 @@ header {
 #menu-category .menu-links {
   color: black !important;
   font-size: 1.25rem;
+  font-weight: 400;
   padding-left: 1rem;
 }
 
@@ -150,7 +161,7 @@ header {
   font-size: 1.25rem !important;
   color: black !important;
   padding-left: 1rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 #menu-footer {

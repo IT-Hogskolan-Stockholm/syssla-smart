@@ -91,7 +91,7 @@ watch(
 )
 
 const handleOpenDialog = (chore = null) => {
-  store.closeAddChoreDialog()
+  closeAddChoreDialog()
   store.editingChore = null
   choreName.value = ''
   selectedDate.value = null
@@ -145,7 +145,7 @@ const handleSubmit = async () => {
 
   if (titleValid && dateValid) {
     addChore(choreName.value, formattedDate.value)
-    store.closeAddChoreDialog()
+    closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
     dateError.value = null
@@ -274,7 +274,7 @@ const isOverdue = (deadline) => {
 
       <!-- addChoreDialog section -->
       <v-dialog
-        v-model="store.addChoreDialog"
+        v-model="addChoreDialog"
         max-width="400px"
         :content-class="'auto-height-dialog'"
         class="d-flex align-start"
@@ -362,20 +362,12 @@ const isOverdue = (deadline) => {
   overflow: visible !important;
 }
 
-.chores-container,
-.create-chore {
+.chores-container {
   width: 100%;
-  margin-top: 2rem;
 }
 
 .rounded-btn {
   border-radius: 16px;
-}
-
-.black-text {
-  color: #000;
-  text-transform: none;
-  font-weight: 400;
 }
 
 .add-btn {
