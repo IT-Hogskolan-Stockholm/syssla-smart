@@ -490,6 +490,7 @@ const isOverdue = (deadline) => {
 
 .alert-icon {
   position: absolute;
+  width: 28px;
   top: -15px;
   right: -15px;
   z-index: 1;
@@ -497,6 +498,10 @@ const isOverdue = (deadline) => {
   border-radius: 50%;
   padding: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+  .v-icon {
+    right: 0.1rem;
+  }
 }
 
 .alert-icon {
