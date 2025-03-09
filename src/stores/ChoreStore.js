@@ -7,7 +7,10 @@ export const useChoreStore = defineStore('choreStore', () => {
   const archivedChores = ref([])
   const history = ref([])
   const rewards = ref([])
-
+  const addChoreDialog = ref(false)
+  const assignUserDialog = ref(false)
+  const editingChore = ref(null)
+  const addRewardDialog = ref(false)
   const sortedChores = computed(() => {
     return Array.isArray(chores.value)
       ? [...chores.value].sort((a, b) => {
@@ -16,10 +19,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       : []
   })
 
-  const addChoreDialog = ref(false)
-  const assignUserDialog = ref(false)
-  const editingChore = ref(null)
-
+  // Initial fetching from JSON-Server
   const fetchChores = async () => {
     try {
       const response = await axios.get('http://localhost:3000/chores')
@@ -53,6 +53,9 @@ export const useChoreStore = defineStore('choreStore', () => {
 
   fetchRewards()
 
+  // Functionality for application
+
+  // Chore-section
   const addChore = async (title, deadline, pointValue) => {
     if (editingChore.value) {
       try {
@@ -87,55 +90,6 @@ export const useChoreStore = defineStore('choreStore', () => {
         console.error('Kunde inte skapa sysslan:', error)
       }
     }
-    addChoreDialog.value = false
-  }
-
-  const openAddChoreDialog = () => {
-    addChoreDialog.value = true
-  }
-
-  const openAssignUserDialog = (chore) => {
-    editingChore.value = chore
-    assignUserDialog.value = true
-  }
-
-  const addAssignedUser = async (user) => {
-    const index = chores.value.findIndex((c) => c.id === editingChore.value?.id)
-    if (index !== -1) {
-      try {
-        await axios.patch(`http://localhost:3000/chores/${chores.value[index].id}`, {
-          assignedTo: user
-        })
-        chores.value[index].assignedTo = user
-      } catch (error) {
-        console.error('Kunde inte uppdatera tilldelad användare:', error)
-      }
-    } else {
-      console.error('Sysslan hittades inte')
-    }
-    assignUserDialog.value = false
-  }
-
-  const assignRandomUser = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/users')
-      const validUsers = response.data.filter((user) => user.name)
-
-      if (validUsers.length === 0) {
-        console.error('Inga giltiga användare att tilldela')
-        return
-      }
-
-      const randomIndex = Math.floor(Math.random() * validUsers.length)
-      const randomUser = validUsers[randomIndex].name
-
-      addAssignedUser(randomUser)
-    } catch (error) {
-      console.error('Kunde inte hämta användare:', error)
-    }
-  }
-
-  const closeAddChoreDialog = () => {
     addChoreDialog.value = false
   }
 
@@ -244,6 +198,57 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
   }
 
+  const openAddChoreDialog = () => {
+    addChoreDialog.value = true
+  }
+
+  const closeAddChoreDialog = () => {
+    addChoreDialog.value = false
+  }
+
+  // User-section
+  const addAssignedUser = async (user) => {
+    const index = chores.value.findIndex((c) => c.id === editingChore.value?.id)
+    if (index !== -1) {
+      try {
+        await axios.patch(`http://localhost:3000/chores/${chores.value[index].id}`, {
+          assignedTo: user
+        })
+        chores.value[index].assignedTo = user
+      } catch (error) {
+        console.error('Kunde inte uppdatera tilldelad användare:', error)
+      }
+    } else {
+      console.error('Sysslan hittades inte')
+    }
+    assignUserDialog.value = false
+  }
+
+  const assignRandomUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users')
+      const validUsers = response.data.filter((user) => user.name)
+
+      if (validUsers.length === 0) {
+        console.error('Inga giltiga användare att tilldela')
+        return
+      }
+
+      const randomIndex = Math.floor(Math.random() * validUsers.length)
+      const randomUser = validUsers[randomIndex].name
+
+      addAssignedUser(randomUser)
+    } catch (error) {
+      console.error('Kunde inte hämta användare:', error)
+    }
+  }
+
+  const openAssignUserDialog = (chore) => {
+    editingChore.value = chore
+    assignUserDialog.value = true
+  }
+
+  // Reward-section
   const addReward = async (name, description, pointsCost, imgSrc = '') => {
     try {
       const highestId =
@@ -263,6 +268,13 @@ export const useChoreStore = defineStore('choreStore', () => {
     }
   }
 
+  const openAddRewardDialog = () => {
+    addRewardDialog.value = true
+  }
+  const closeAddRewardDialog = () => {
+    addRewardDialog.value = false
+  }
+
   return {
     chores,
     archivedChores,
@@ -280,10 +292,12 @@ export const useChoreStore = defineStore('choreStore', () => {
     archiveChore,
     undoArchiveChore,
     deleteChore,
-    fetchHistory,
     history,
-    fetchRewards,
+    fetchHistory,
     rewards,
-    addReward
+    fetchRewards,
+    addReward,
+    openAddRewardDialog,
+    closeAddRewardDialog
   }
 })
