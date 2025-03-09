@@ -308,7 +308,7 @@ const isOverdue = (deadline) => {
               ></v-text-field>
 
               <!-- Date Picker -->
-              <div class="d-flex justify-space-between align-center mt-4">
+              <div class="d-flex justify-space-between align-center">
                 <div class="flex-grow">
                   <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
                 </div>
@@ -375,6 +375,7 @@ const isOverdue = (deadline) => {
 .chores-container,
 .create-chore {
   width: 100%;
+  margin-top: 2rem;
 }
 
 .rounded-btn {
@@ -504,7 +505,21 @@ const isOverdue = (deadline) => {
 .alert-icon:hover {
   transform: scale(1.1);
 }
+.star-points {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+}
 
+.star-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: rgb(0, 0, 0);
+  font-size: 14px;
+}
 /* Animation add/remove chores */
 .fade-enter-active,
 .fade-leave-active {
