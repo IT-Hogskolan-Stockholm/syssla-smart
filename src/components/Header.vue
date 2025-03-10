@@ -29,6 +29,9 @@ onBeforeUnmount(() => {
     <router-link to="/">
       <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
     </router-link>
+    <router-link to="/">
+      <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
+    </router-link>
     <div id="user" class="d-flex">
       <img id="avatar" src="../assets/avatarIcon.svg" alt="User icon" @click.stop="toggleMenu" />
       <v-overlay
@@ -54,15 +57,22 @@ onBeforeUnmount(() => {
             <router-link class="menu-links" to="/">Hem</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
+            <v-icon class="black-text" size="30" color="black">mdi-home</v-icon>
+            <router-link class="menu-links" to="/">Hem</router-link>
+          </div>
+          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-trophy-variant</v-icon>
+            <router-link class="menu-links" to="/beloningar">Belöningar</router-link>
             <router-link class="menu-links" to="/beloningar">Belöningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-history</v-icon>
             <router-link class="menu-links" to="/historik">Historik</router-link>
+            <router-link class="menu-links" to="/historik">Historik</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-cog</v-icon>
+            <router-link class="menu-links" to="/installningar">Inställningar</router-link>
             <router-link class="menu-links" to="/installningar">Inställningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
@@ -95,6 +105,7 @@ header {
     rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
   position: sticky;
   top: 0;
+  margin-bottom: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -148,6 +159,7 @@ header {
   border-right-width: 0px;
   border-style: solid;
   border-bottom-color: rgba(34, 37, 41, 0.25);
+  color: green;
 }
 
 #menu-category .menu-links {
@@ -170,6 +182,7 @@ header {
   bottom: 1rem;
   right: 1rem;
 }
+
 #menu-footer span {
   font-size: 1.25rem;
   color: black;
@@ -186,19 +199,23 @@ header {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
+
   25% {
     opacity: 0.8;
     transform: scale(1.2) rotate(20deg);
     filter: brightness(1.5);
   }
+
   50% {
     opacity: 1;
     transform: scale(0.9) rotate(-20deg);
   }
+
   75% {
     opacity: 0.8;
     transform: scale(1.1) rotate(10deg);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
