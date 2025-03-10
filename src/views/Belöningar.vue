@@ -11,14 +11,23 @@ const imgSrc = ref('')
 const form = ref(null)
 
 const handleSubmit = async () => {
-  if (!rewardName.value.trim()) return
-  await store.addReward(rewardName.value, description.value, points.value, imgSrc.value)
-  rewardName.value = ''
-  description.value = ''
-  points.value = 0
-  imgSrc.value = ''
+  if (!rewardName.value.trim()) {
+    return
+  }
+  if (points.value <= 0) {
+    return
+  }
+  try {
+    await store.addReward(rewardName.value, description.value, points.value, imgSrc.value)
+    rewardName.value = ''
+    description.value = ''
+    points.value = 0
+    imgSrc.value = ''
 
-  store.closeAddRewardDialog()
+    store.closeAddRewardDialog()
+  } catch (error) {
+    console.error('Något gick fel vid skapandet av belöningen:', error)
+  }
 }
 
 const increasePoints = () => {
@@ -61,7 +70,7 @@ const rules = {
         <v-card class="d-flex flex-column" style="min-height: 0">
           <v-form ref="form">
             <div class="form-container">
-              <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-card-text class="flex-grow-0 pb-0" style="overflow: visible">
                 <v-text-field
                   variant="outlined"
                   v-model="rewardName"
@@ -74,18 +83,19 @@ const rules = {
                 </div>
               </v-card-text>
 
-              <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-card-text class="flex-grow-0 py-0" style="overflow: visible">
                 <v-textarea
                   variant="outlined"
                   v-model="description"
                   placeholder="Beskrivning"
                   rows="3"
                   :no-resize="true"
+                  :hide-details="true"
                 ></v-textarea>
               </v-card-text>
 
               <v-card-text
-                class="flex-grow-0 custom-card-text d-flex align-center justify-space-between"
+                class="flex-grow-0 custom-card-text d-flex align-center justify-space-between py-4"
               >
                 <div class="input-points d-flex align-center">
                   <v-text-field
@@ -93,7 +103,9 @@ const rules = {
                     class="mc-3 text-center"
                     style="text-align: center"
                     label="Poäng"
+                    type="number"
                     hide-details
+                    :hide-spin-buttons="true"
                     single-line
                   ></v-text-field>
 
@@ -112,16 +124,17 @@ const rules = {
                 </div>
               </v-card-text>
 
-              <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-card-text class="flex-grow-0 py-0" style="overflow: visible">
                 <v-text-field
                   variant="outlined"
                   v-model="imgSrc"
                   placeholder="URL till bild (t.ex. Unsplash)"
+                  :hide-details="true"
                 ></v-text-field>
               </v-card-text>
 
               <!--Lägg till button section-->
-              <v-card-actions class="justify-center flex-grow-0 mt-5">
+              <v-card-actions class="justify-center flex-grow-0 px-4 pt-4 pb-2">
                 <v-btn
                   color="green"
                   @click="handleSubmit(rewardName)"
@@ -160,6 +173,14 @@ const rules = {
   display: none !important;
 }
 
+::v-deep(.v-input__details) {
+  padding-bottom: 6px;
+}
+
+::v-deep(.error--text) {
+  display: none !important;
+}
+
 .counter-label {
   font-size: 1rem;
 }
@@ -188,10 +209,6 @@ const rules = {
       width: 100%;
     }
   }
-}
-
-:deep(.v-card-actions) {
-  padding: 16px 24px !important;
 }
 
 .custom-btn {

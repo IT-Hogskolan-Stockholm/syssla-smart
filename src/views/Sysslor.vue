@@ -25,6 +25,7 @@ const addChore = store.addChore
 const addAssignedUser = store.addAssignedUser
 const choreName = ref('')
 const pointValue = ref(1)
+const selectedDate = ref(null)
 const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
@@ -91,12 +92,6 @@ const undoAction = (id) => {
   showUndo.value[id] = false
 }
 
-const getChoreTitle = (id) => {
-  const chore =
-    archivedChores.value.find((c) => c.id == id) || deletedChores.value.find((c) => c.id == id)
-  return chore ? chore.title : 'Okänd syssla'
-}
-
 watch(
   () => store.editingChore,
   (chore) => {
@@ -128,26 +123,6 @@ const decreasePoints = () => {
   if (pointValue.value < 100 && pointValue.value > 0) pointValue.value--
 }
 
-const formatDate = (date) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return d.toISOString().split('T')[0]
-}
-
-const formattedDate = computed(() => {
-  return selectedDate.value ? new Date(selectedDate.value).toLocaleDateString() : 'Välj ett datum'
-})
-
-const selectedDate = ref(null)
-const menu = ref(false)
-
-const updateDate = (date) => {
-  selectedDate.value = date
-  menu.value = false
-  dateError.value = null
-  validateDate.value = false
-}
-
 const getUserColor = (assignedTo) => {
   const user = userStore.users.find((user) => user.name === assignedTo)
   return user ? user.color : '#FFF'
@@ -169,7 +144,7 @@ const handleSubmit = async () => {
   }
 
   if (titleValid && dateValid) {
-    addChore(choreName.value, formattedDate.value, pointValue.value)
+    addChore(choreName.value, selectedDateDate.value, pointValue.value)
     closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
@@ -195,7 +170,7 @@ const isOverdue = (deadline) => {
       <v-btn
         v-for="chore in archivedChores.filter((c) => showUndo[c.id])"
         :key="'undo-archived-' + chore.id"
-        @click="undoArchiveChore(chore)"
+        @click="undoAction(chore.id)"
         height="70px"
         color="green-lighten-3"
         class="border-lg border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
@@ -207,7 +182,7 @@ const isOverdue = (deadline) => {
       <v-btn
         v-for="chore in store.deletedChores"
         :key="'undo-deleted-' + chore.id"
-        @click="store.restoreDeletedChore(chore)"
+        @click="undoAction(chore.id)"
         height="70px"
         color="red-lighten-3"
         class="border-lg border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
@@ -247,7 +222,7 @@ const isOverdue = (deadline) => {
           <span class="black-text">{{ chore.title }}</span>
           <div class="deadline-container d-flex flex-row align-center">
             <span><v-icon>mdi-calendar-month</v-icon></span>
-            <span>{{ formatDate(chore.deadline) }}</span>
+            <span>{{ chore.deadline }}</span>
           </div>
         </div>
         <div class="icons-container d-flex flex-row align-center ga-4">
@@ -337,7 +312,7 @@ const isOverdue = (deadline) => {
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
           <v-form ref="form">
-            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+            <v-card-text class="flex-grow-0 pb-0" style="overflow: visible">
               <v-text-field
                 variant="outlined"
                 v-model="choreName"
@@ -346,7 +321,7 @@ const isOverdue = (deadline) => {
               ></v-text-field>
             </v-card-text>
             <v-card-text
-              class="flex-grow-0 custom-card-text d-flex align-center justify-space-between"
+              class="flex-grow-0 custom-card-text d-flex align-center justify-space-between py-0"
             >
               <div class="input-points d-flex align-center">
                 <v-text-field
@@ -354,7 +329,9 @@ const isOverdue = (deadline) => {
                   class="mc-3 text-center"
                   style="text-align: center"
                   label="Poäng"
-                  hide-details
+                  type="number"
+                  :hide-details="true"
+                  :hide-spin-buttons="true"
                   single-line
                 ></v-text-field>
 
@@ -372,52 +349,20 @@ const isOverdue = (deadline) => {
                 <v-icon class="m1-1" color="yellow darken-2" size="30">mdi-star</v-icon>
               </div>
             </v-card-text>
-
-            <!-- Date Picker -->
-            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
-              <div class="d-flex justify-space-between align-center">
-                <div class="flex-grow">
-                  <span class="date-text" :class="{ 'error--text': dateError }">{{
-                    formattedDate
-                  }}</span>
-                </div>
-                <div>
-                  <v-menu
-                    v-model="menu"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    :attach="true"
-                    content-class="date-picker-popup"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-bind="attrs" @click="menu = true" icon>
-                        <v-icon color="black">mdi-calendar</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-date-picker
-                        :hide-header="true"
-                        v-model="selectedDate"
-                        @update:modelValue="updateDate"
-                        no-title
-                      ></v-date-picker>
-                    </v-card>
-                  </v-menu>
-                </div>
-              </div>
-              <div class="v-messages error--text" role="alert">
-                <div class="v-messages__wrapper">
-                  <div class="v-messages__message">{{ dateError }}</div>
-                </div>
-              </div>
+            <v-card-text class="flex-grow-0 pt-4" style="overflow: visible">
+              <v-text-field
+                v-model="selectedDate"
+                type="date"
+                variant="outlined"
+                :hide-details="true"
+              ></v-text-field>
             </v-card-text>
 
             <!-- Lägg till button section -->
-            <v-card-actions class="justify-center flex-grow-0 mt-5">
+            <v-card-actions class="justify-center flex-grow-0 px-4 pt-0 pb-2">
               <v-btn
                 color="green"
-                @click="handleSubmit(choreName, formattedDate, pointValue)"
+                @click="handleSubmit(choreName, selectedDate, pointValue)"
                 size="large"
                 class="add-btn"
                 block
@@ -459,6 +404,14 @@ const isOverdue = (deadline) => {
   display: none !important;
 }
 
+::v-deep(.v-input__details) {
+  padding-bottom: 6px;
+}
+
+::v-deep(.error--text) {
+  display: none !important;
+}
+
 .point-arrow {
   margin: 0.4rem;
   width: 0.625rem;
@@ -484,7 +437,7 @@ const isOverdue = (deadline) => {
   padding: 1rem 4rem !important;
   margin-bottom: 0.5rem;
   margin: 0 24px 0.5rem 24px;
-  border-radius: 16px;
+  border-radius: 6px;
   height: unset !important;
 
   .v-btn__content {
@@ -492,10 +445,6 @@ const isOverdue = (deadline) => {
       width: 100%;
     }
   }
-}
-
-:deep(.v-card-actions) {
-  padding: 16px 24px !important;
 }
 
 .custom-btn {
