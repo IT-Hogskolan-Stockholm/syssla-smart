@@ -19,7 +19,6 @@
       >
         <v-card class="d-flex flex-column" style="min-height: 0">
           <v-form ref="form">
-
             <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
                 v-model="rewardName"
@@ -28,30 +27,27 @@
               ></v-text-field>
 
               <div class="v-messages error--text" role="alert">
-                <div class="v-messages__wrapper">
-                </div>
+                <div class="v-messages__wrapper"></div>
               </div>
             </v-card-text>
 
-            <v-card-text class="flex-grow-0 " style="overflow: visible; padding-bottom: 0">
+            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+              <v-textarea
+                v-model="description"
+                placeholder="Beskrivning"
+                rows="2"
+                class="custom-text-area"
+              ></v-textarea>
+            </v-card-text>
 
-            <v-textarea
-            v-model="description"
-            placeholder="Beskrivning"
-            rows="2"
-            class="custom-text-area"
-            ></v-textarea>
-          </v-card-text>
-
-          <v-card-text class="flex-grow-0 custom-card-text d-flex align-center">
-
-            <v-text-field
+            <v-card-text class="flex-grow-0 custom-card-text d-flex align-center">
+              <v-text-field
                 v-model="points"
                 type="number"
                 min="0"
                 max="100"
                 step="1"
-                class="mc-3 text-center "
+                class="mc-3 text-center"
                 style="max-width: 80px; text-align: center"
                 label="Poäng"
                 hide-details
@@ -59,21 +55,20 @@
               ></v-text-field>
 
               <div class="d-flex flex-column align-center mx-2">
-
-              <v-btn icon @click="increasePoints">
-                <v-icon>mdi-chevron-up</v-icon>
-              </v-btn>
-              <v-btn icon @click="decreasePoints">
-                <v-icon>mdi-chevron-down</v-icon>
-              </v-btn>
-            </div>
-            <span class="ml-2">Poäng</span>
-            <v-icon class="m1-1" color="yellow darken-2 size=18">mdi-star</v-icon>
+                <v-btn icon @click="increasePoints">
+                  <v-icon>mdi-chevron-up</v-icon>
+                </v-btn>
+                <v-btn icon @click="decreasePoints">
+                  <v-icon>mdi-chevron-down</v-icon>
+                </v-btn>
+              </div>
+              <span class="ml-2">Poäng</span>
+              <v-icon class="m1-1" color="yellow darken-2 size=18">mdi-star</v-icon>
             </v-card-text>
 
-
-          <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
+            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
+                v-model="imageUrl"
                 placeholder="URL till bild (t.ex. Unsplash)"
               ></v-text-field>
             </v-card-text>
@@ -94,32 +89,36 @@
         </v-card>
       </v-dialog>
     </section>
+    <beloningCard />
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import { useChoreStore } from '../stores/ChoreStore';
+import { ref } from 'vue'
+import { useChoreStore } from '../stores/ChoreStore'
+import beloningCard from '../components/beloningCard.vue'
 
 const store = useChoreStore()
 const points = ref(0)
 const rewardName = ref('')
 const description = ref('')
 const form = ref(null)
+const imageUrl = ref('')
 
 const handleSubmit = async () => {
   if (!rewardName.value.trim()) return
 
-
   store.addReward({
-    name:rewardName.value,
+    name: rewardName.value,
     description: description.value,
-    points: points.value
+    points: points.value,
+    imageUrl: imageUrl.value
   })
 
   rewardName.value = ''
   description.value = ''
   points.value = 0
+  imageUrl.value = ''
 
   store.closeAddRewardDialog()
 }
@@ -136,14 +135,12 @@ const openAddRewardDialog = () => {
   store.addRewardDialog = true
 }
 
-
 const rules = {
-  required: (value) => (value?.trim() ? true : "Du måste ange en titel")
+  required: (value) => (value?.trim() ? true : 'Du måste ange en titel')
 }
 </script>
 
 <style scoped>
-
 .rounded-btn {
   border-radius: 16px;
 }
@@ -187,6 +184,6 @@ const rules = {
   width: 300px;
   min-height: 300px;
   max-width: 500px;
-  max-height: 250px
+  max-height: 250px;
 }
 </style>
