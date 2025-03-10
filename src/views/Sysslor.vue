@@ -161,7 +161,6 @@ const isOverdue = (deadline) => {
 
 <template>
   <div class="chores-container">
-    <!-- Undo btn -->
     <transition-group
       name="fade"
       tag="div"
@@ -192,7 +191,6 @@ const isOverdue = (deadline) => {
         <v-icon class="ml-7 black-text">mdi-arrow-u-left-top</v-icon>
       </v-btn>
     </transition-group>
-
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn
         v-for="chore in store.sortedChores"
@@ -293,8 +291,6 @@ const isOverdue = (deadline) => {
         <span class="black-text">Ny Syssla</span>
         <v-icon class="ml-7 black-text" color="black">mdi-plus</v-icon>
       </v-btn>
-
-      <!-- addChoreDialog section -->
       <v-dialog
         v-model="addChoreDialog"
         max-width="400px"
@@ -334,7 +330,6 @@ const isOverdue = (deadline) => {
                   :hide-spin-buttons="true"
                   single-line
                 ></v-text-field>
-
                 <div class="d-flex flex-column align-center mx-2">
                   <v-btn icon variant="flat" class="point-arrow d-flex" @click="increasePoints">
                     <v-icon>mdi-chevron-up</v-icon>
@@ -357,8 +352,6 @@ const isOverdue = (deadline) => {
                 :hide-details="true"
               ></v-text-field>
             </v-card-text>
-
-            <!-- Lägg till button section -->
             <v-card-actions class="justify-center flex-grow-0 px-4 pt-0 pb-2">
               <v-btn
                 color="green"
