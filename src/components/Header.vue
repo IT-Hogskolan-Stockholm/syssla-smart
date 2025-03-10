@@ -29,9 +29,6 @@ onBeforeUnmount(() => {
     <router-link to="/">
       <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
     </router-link>
-    <router-link to="/">
-      <img id="logo" src="../assets/logo.svg" alt="Logo Syssla Smart" />
-    </router-link>
     <div id="user" class="d-flex">
       <img id="avatar" src="../assets/avatarIcon.svg" alt="User icon" @click.stop="toggleMenu" />
       <v-overlay
@@ -57,22 +54,15 @@ onBeforeUnmount(() => {
             <router-link class="menu-links" to="/">Hem</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
-            <v-icon class="black-text" size="30" color="black">mdi-home</v-icon>
-            <router-link class="menu-links" to="/">Hem</router-link>
-          </div>
-          <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-trophy-variant</v-icon>
-            <router-link class="menu-links" to="/beloningar">Belöningar</router-link>
             <router-link class="menu-links" to="/beloningar">Belöningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-history</v-icon>
             <router-link class="menu-links" to="/historik">Historik</router-link>
-            <router-link class="menu-links" to="/historik">Historik</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-cog</v-icon>
-            <router-link class="menu-links" to="/installningar">Inställningar</router-link>
             <router-link class="menu-links" to="/installningar">Inställningar</router-link>
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">

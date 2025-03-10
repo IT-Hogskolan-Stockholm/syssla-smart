@@ -107,13 +107,3 @@ const resetDialog = () => {
   cursor: pointer;
 }
 </style>
-
-<style scoped>
-.menu-links {
-  color: black !important;
-  font-size: 1.25rem;
-  padding-left: 1rem;
-  font-weight: 400;
-  cursor: pointer;
-}
-</style>

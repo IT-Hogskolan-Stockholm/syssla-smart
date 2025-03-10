@@ -30,7 +30,6 @@ const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
 const assignRandomUser = store.assignRandomUser
-const rewardPoints = ref(null)
 
 onMounted(async () => {
   await store.fetchChores()
@@ -78,20 +77,6 @@ const endSwipe = (chore) => {
   setTimeout(() => {
     swipeProgress[chore.id] = 0
   }, 200)
-}
-
-const deleteChore = (chore) => {
-  deletedChores.value[chore.id] = chore
-  store.chores = store.chores.filter((c) => c.id !== chore.id)
-
-  setTimeout(() => {
-    delete deletedChores.value[chore.id] // Ta bort ångra-knappen efter några sekunder
-  }, 4000)
-}
-
-const undoDelete = (chore) => {
-  store.chores.push(deletedChores.value[chore.id])
-  delete deletedChores.value[chore.id]
 }
 
 const undoAction = (id) => {
@@ -207,16 +192,7 @@ const isOverdue = (deadline) => {
         <v-icon class="ml-7 black-text">mdi-arrow-u-left-top</v-icon>
       </v-btn>
     </transition-group>
-    <transition-group name="fade">
-      <v-btn
-        v-for="chore in Object.values(deletedChores)"
-        :key="'delete-' + chore.id"
-        @click="undoDelete(chore)"
-        color="red-lighten-3"
-      >
-        Ångra radering av "{{ chore.title }}"
-      </v-btn>
-    </transition-group>
+
     <section class="list-of-chores-section d-flex justify-center flex-column align-center">
       <v-btn
         v-for="chore in store.sortedChores"
@@ -589,17 +565,5 @@ const isOverdue = (deadline) => {
   z-index: 2;
   color: rgb(0, 0, 0);
   font-size: 14px;
-}
-
-/* Animation add/remove chores */
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
 }
 </style>
