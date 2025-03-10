@@ -24,6 +24,7 @@ const openAssignUserDialog = store.openAssignUserDialog
 const addChore = store.addChore
 const addAssignedUser = store.addAssignedUser
 const choreName = ref('')
+const pointValue = ref(0)
 const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
@@ -103,6 +104,14 @@ const handleOpenDialog = (chore = null) => {
   store.openAddChoreDialog()
 }
 
+const increasePoints = () => {
+  if (pointValue.value < 100) pointValue.value++
+}
+
+const decreasePoints = () => {
+  if (pointValue.value < 100 && pointValue.value > 0) pointValue.value--
+}
+
 const formatDate = (date) => {
   if (!date) return ''
   const d = new Date(date)
@@ -144,13 +153,14 @@ const handleSubmit = async () => {
   }
 
   if (titleValid && dateValid) {
-    addChore(choreName.value, formattedDate.value)
+    addChore(choreName.value, formattedDate.value, pointValue.value)
     closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
     dateError.value = null
   }
 }
+
 const isOverdue = (deadline) => {
   if (!deadline) return false
   const today = new Date().toISOString().split('T')[0]
@@ -292,12 +302,42 @@ const isOverdue = (deadline) => {
           <v-form ref="form">
             <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <v-text-field
+                variant="outlined"
                 v-model="choreName"
                 placeholder="Titel"
                 :rules="[rules.required]"
               ></v-text-field>
+            </v-card-text>
+            <v-card-text
+              class="flex-grow-0 custom-card-text d-flex align-center justify-space-between mb-5"
+            >
+              <div class="input-points d-flex align-center">
+                <v-text-field
+                  v-model="pointValue"
+                  class="mc-3 text-center"
+                  style="text-align: center"
+                  label="Poäng"
+                  hide-details
+                  single-line
+                ></v-text-field>
 
-              <!-- Date Picker -->
+                <div class="d-flex flex-column align-center mx-2">
+                  <v-btn icon variant="flat" class="point-arrow d-flex" @click="increasePoints">
+                    <v-icon>mdi-chevron-up</v-icon>
+                  </v-btn>
+                  <v-btn icon variant="flat" class="point-arrow d-flex" @click="decreasePoints">
+                    <v-icon>mdi-chevron-down</v-icon>
+                  </v-btn>
+                </div>
+              </div>
+              <div class="counter-label">
+                <span class="ml-2">Poäng</span>
+                <v-icon class="m1-1" color="yellow darken-2" size="30">mdi-star</v-icon>
+              </div>
+            </v-card-text>
+
+            <!-- Date Picker -->
+            <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <div class="d-flex justify-space-between align-center">
                 <div class="flex-grow">
                   <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
@@ -338,7 +378,7 @@ const isOverdue = (deadline) => {
             <v-card-actions class="justify-center flex-grow-0 mt-5">
               <v-btn
                 color="green"
-                @click="handleSubmit(choreName, formattedDate)"
+                @click="handleSubmit(choreName, formattedDate, pointValue)"
                 size="large"
                 class="add-btn"
                 block
@@ -364,6 +404,31 @@ const isOverdue = (deadline) => {
 
 .chores-container {
   width: 100%;
+}
+
+.input-points {
+  border: 1px solid #a4a4a4;
+  border-radius: 6px;
+  width: 13rem;
+}
+
+::v-deep(.input-points .v-field__overlay) {
+  display: none !important;
+}
+
+::v-deep(.input-points .v-field__outline) {
+  display: none !important;
+}
+
+.point-arrow {
+  margin: 0.4rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  font-size: 1rem;
+}
+
+.counter-label {
+  font-size: 1rem;
 }
 
 .rounded-btn {

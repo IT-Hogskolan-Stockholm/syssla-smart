@@ -79,33 +79,37 @@ const rules = {
                   variant="outlined"
                   v-model="description"
                   placeholder="Beskrivning"
-                  rows="2"
-                  class="custom-text-area"
+                  rows="3"
+                  :no-resize="true"
                 ></v-textarea>
               </v-card-text>
 
-              <v-card-text class="flex-grow-0 custom-card-text d-flex align-center">
-                <div class="input-points">
+              <v-card-text
+                class="flex-grow-0 custom-card-text d-flex align-center justify-space-between"
+              >
+                <div class="input-points d-flex align-center">
                   <v-text-field
                     v-model="points"
                     class="mc-3 text-center"
-                    style="max-width: 80px; text-align: center"
+                    style="text-align: center"
                     label="Poäng"
                     hide-details
                     single-line
                   ></v-text-field>
 
                   <div class="d-flex flex-column align-center mx-2">
-                    <v-btn icon variant="flat" class="point-arrow" @click="increasePoints">
+                    <v-btn icon variant="flat" class="point-arrow d-flex" @click="increasePoints">
                       <v-icon>mdi-chevron-up</v-icon>
                     </v-btn>
-                    <v-btn icon variant="flat" class="point-arrow" @click="decreasePoints">
+                    <v-btn icon variant="flat" class="point-arrow d-flex" @click="decreasePoints">
                       <v-icon>mdi-chevron-down</v-icon>
                     </v-btn>
                   </div>
                 </div>
-                <span class="ml-2">Poäng</span>
-                <v-icon class="m1-1" color="yellow darken-2 size=18">mdi-star</v-icon>
+                <div class="counter-label">
+                  <span class="ml-2">Poäng</span>
+                  <v-icon class="m1-1" color="yellow darken-2" size="18">mdi-star</v-icon>
+                </div>
               </v-card-text>
 
               <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
@@ -142,16 +146,10 @@ const rules = {
   margin-top: 2rem;
 }
 
-.form-container {
-  padding: 1.8rem;
-  color: black;
-}
-
 .input-points {
-  display: flex;
-  align-items: center;
   border: 1px solid #a4a4a4;
   border-radius: 6px;
+  width: 13rem;
 }
 
 ::v-deep(.input-points .v-field__overlay) {
@@ -163,7 +161,6 @@ const rules = {
 }
 
 .point-arrow {
-  display: flex;
   margin: 0.4rem;
   width: 0.625rem;
   height: 0.625rem;
