@@ -1,3 +1,50 @@
+<script setup>
+import { ref } from 'vue'
+import { useChoreStore } from '../stores/ChoreStore'
+import beloningCard from '../components/beloningCard.vue'
+
+const store = useChoreStore()
+const points = ref(0)
+const rewardName = ref('')
+const description = ref('')
+const form = ref(null)
+const imageUrl = ref('')
+
+const handleSubmit = async () => {
+  if (!rewardName.value.trim()) return
+
+  store.addReward({
+    name: rewardName.value,
+    description: description.value,
+    points: points.value,
+    imageUrl: imageUrl.value
+  })
+
+  rewardName.value = ''
+  description.value = ''
+  points.value = 0
+  imageUrl.value = ''
+
+  store.closeAddRewardDialog()
+}
+
+const increasePoints = () => {
+  if (points.value < 100) points.value++
+}
+
+const decreasePoints = () => {
+  if (points.value < 100) points.value--
+}
+
+const openAddRewardDialog = () => {
+  store.addRewardDialog = true
+}
+
+const rules = {
+  required: (value) => (value?.trim() ? true : 'Du måste ange en titel')
+}
+</script>
+
 <template>
   <div>
     <section class="create-new-section d-flex justify-center flex-column align-center">
@@ -92,53 +139,6 @@
     <beloningCard />
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { useChoreStore } from '../stores/ChoreStore'
-import beloningCard from '../components/beloningCard.vue'
-
-const store = useChoreStore()
-const points = ref(0)
-const rewardName = ref('')
-const description = ref('')
-const form = ref(null)
-const imageUrl = ref('')
-
-const handleSubmit = async () => {
-  if (!rewardName.value.trim()) return
-
-  store.addReward({
-    name: rewardName.value,
-    description: description.value,
-    points: points.value,
-    imageUrl: imageUrl.value
-  })
-
-  rewardName.value = ''
-  description.value = ''
-  points.value = 0
-  imageUrl.value = ''
-
-  store.closeAddRewardDialog()
-}
-
-const increasePoints = () => {
-  if (points.value < 100) points.value++
-}
-
-const decreasePoints = () => {
-  if (points.value < 100) points.value--
-}
-
-const openAddRewardDialog = () => {
-  store.addRewardDialog = true
-}
-
-const rules = {
-  required: (value) => (value?.trim() ? true : 'Du måste ange en titel')
-}
-</script>
 
 <style scoped>
 .rounded-btn {
