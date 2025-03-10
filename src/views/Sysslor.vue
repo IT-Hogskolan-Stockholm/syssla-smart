@@ -24,7 +24,7 @@ const openAssignUserDialog = store.openAssignUserDialog
 const addChore = store.addChore
 const addAssignedUser = store.addAssignedUser
 const choreName = ref('')
-const pointValue = ref(0)
+const pointValue = ref(1)
 const form = ref(null)
 const dateError = ref(null)
 const validateDate = ref(false)
@@ -67,8 +67,10 @@ const endSwipe = (chore) => {
   if (Math.abs(swipeProgress[chore.id]) > 0.2) {
     if (direction === 'right') {
       archiveChore(chore)
+      showUndo.value[chore.id] = true
     } else if (direction === 'left') {
       deleteChore(chore)
+      showUndo.value[chore.id] = true
     }
   }
   setTimeout(() => {
@@ -76,9 +78,23 @@ const endSwipe = (chore) => {
   }, 200)
 }
 
-const undoArchive = (chore) => {
-  undoArchiveChore(chore)
-  showUndo.value[chore.id] = false
+const undoAction = (id) => {
+  const chore =
+    archivedChores.value.find((c) => c.id == id) || deletedChores.value.find((c) => c.id == id)
+  if (chore) {
+    if (archivedChores.value.includes(chore)) {
+      undoArchiveChore(chore)
+    } else {
+      restoreDeletedChore(chore)
+    }
+  }
+  showUndo.value[id] = false
+}
+
+const getChoreTitle = (id) => {
+  const chore =
+    archivedChores.value.find((c) => c.id == id) || deletedChores.value.find((c) => c.id == id)
+  return chore ? chore.title : 'Okänd syssla'
 }
 
 watch(
@@ -171,17 +187,34 @@ const isOverdue = (deadline) => {
 <template>
   <div class="chores-container">
     <!-- Undo btn -->
-    <transition-group name="fade" tag="div" class="transition-container">
+    <transition-group
+      name="fade"
+      tag="div"
+      class="transition-container d-flex flex-column align-center ga-4"
+    >
       <v-btn
         v-for="chore in archivedChores.filter((c) => showUndo[c.id])"
-        :key="'undo-' + chore.id"
-        @click="undoArchive(chore)"
+        :key="'undo-archived-' + chore.id"
+        @click="undoArchiveChore(chore)"
         height="70px"
-        color="red-lighten-3"
+        color="green-lighten-3"
         class="border-lg border-purple rounded-btn black-text custom-btn d-flex justify-space-between align-center"
         max-width="400px"
       >
-        <b>Ångra </b>Ta bort "{{ chore.title }}" ?
+        <span class="black-text"> Ångra arkivering?</span>
+        <v-icon class="ml-7 black-text">mdi-arrow-u-left-top</v-icon>
+      </v-btn>
+      <v-btn
+        v-for="chore in store.deletedChores"
+        :key="'undo-deleted-' + chore.id"
+        @click="store.restoreDeletedChore(chore)"
+        height="70px"
+        color="red-lighten-3"
+        class="border-lg border-blue rounded-btn black-text custom-btn d-flex justify-space-between align-center"
+        max-width="400px"
+      >
+        <span class="black-text"> Ångra borttagning?</span>
+        <v-icon class="ml-7 black-text">mdi-arrow-u-left-top</v-icon>
       </v-btn>
     </transition-group>
 
@@ -227,13 +260,17 @@ const isOverdue = (deadline) => {
           >
             {{ chore.assignedTo.substring(0, 2).toUpperCase() || '-' }}
           </span>
-          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="36" color="black">
+          <v-icon @click="handleOpenDialog(chore)" class="black-text" size="32" color="black">
             mdi-pencil-outline
           </v-icon>
         </div>
         <span class="alert-icon" v-if="isOverdue(chore.deadline)">
           <v-icon color="#8b0000" size="28">mdi-alert-circle</v-icon>
         </span>
+        <div class="star-points" v-if="!isOverdue(chore.deadline)">
+          <v-icon color="yellow" size="38">mdi-star</v-icon>
+          <span class="star-number">{{ chore.pointValue }}</span>
+        </div>
       </v-btn>
       <v-dialog
         v-model="assignUserDialog"
@@ -309,7 +346,7 @@ const isOverdue = (deadline) => {
               ></v-text-field>
             </v-card-text>
             <v-card-text
-              class="flex-grow-0 custom-card-text d-flex align-center justify-space-between mb-5"
+              class="flex-grow-0 custom-card-text d-flex align-center justify-space-between"
             >
               <div class="input-points d-flex align-center">
                 <v-text-field
@@ -340,7 +377,9 @@ const isOverdue = (deadline) => {
             <v-card-text class="flex-grow-0" style="overflow: visible; padding-bottom: 0">
               <div class="d-flex justify-space-between align-center">
                 <div class="flex-grow">
-                  <span :class="{ 'error--text': dateError }">{{ formattedDate }}</span>
+                  <span class="date-text" :class="{ 'error--text': dateError }">{{
+                    formattedDate
+                  }}</span>
                 </div>
                 <div>
                   <v-menu
@@ -428,6 +467,10 @@ const isOverdue = (deadline) => {
 }
 
 .counter-label {
+  font-size: 1rem;
+}
+
+.date-text {
   font-size: 1rem;
 }
 
@@ -524,7 +567,7 @@ const isOverdue = (deadline) => {
 }
 
 .overdue-border {
-  border: 5px solid #b71c1c !important;
+  border: 3px solid #b71c1c !important;
 }
 
 ::v-deep(.bg-red-lighten-2) {
@@ -554,9 +597,11 @@ const isOverdue = (deadline) => {
 .alert-icon {
   transition: transform 0.2s ease;
 }
+
 .alert-icon:hover {
   transform: scale(1.1);
 }
+
 .star-points {
   position: absolute;
   top: -15px;
@@ -572,6 +617,7 @@ const isOverdue = (deadline) => {
   color: rgb(0, 0, 0);
   font-size: 14px;
 }
+
 /* Animation add/remove chores */
 .fade-enter-active,
 .fade-leave-active {
@@ -582,17 +628,5 @@ const isOverdue = (deadline) => {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(-20px);
-}
-
-.transition-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.undo-btn {
-  background-color: pink;
-  color: white;
 }
 </style>

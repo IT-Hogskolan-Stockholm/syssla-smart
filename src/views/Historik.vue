@@ -41,9 +41,10 @@ const getUserColor = (assignedTo) => {
           >
             {{ chore.assignedTo ? chore.assignedTo.substring(0, 2).toUpperCase() : '-' }}
           </span>
-          <span class="d-flex justify-center align-center">
-            {{ chore.pointValue }}
-          </span>
+        </div>
+        <div class="star-points">
+          <v-icon color="yellow" size="38">mdi-star</v-icon>
+          <span class="star-number">{{ chore.pointValue }}</span>
         </div>
       </v-btn>
     </section>
@@ -111,5 +112,21 @@ const getUserColor = (assignedTo) => {
   font-size: 1rem;
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.star-points {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+}
+
+.star-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: black;
+  font-size: 14px;
 }
 </style>

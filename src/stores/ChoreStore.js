@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([])
   const archivedChores = ref([])
+  const deletedChores = ref([])
   const history = ref([])
   const rewards = ref([])
   const addChoreDialog = ref(false)
@@ -98,25 +99,21 @@ export const useChoreStore = defineStore('choreStore', () => {
     if (index !== -1) {
       const [archivedChore] = chores.value.splice(index, 1)
       archivedChores.value.push(archivedChore)
-
       const completedChore = {
         ...archivedChore,
         completedDate: new Date().toISOString().split('T')[0],
         isCompleted: true
       }
-
       try {
         await axios.post('http://localhost:3000/history', completedChore)
       } catch (error) {
         console.error('Kunde inte arkivera sysslan i historiken:', error)
       }
-
       if (archivedChore.assignedTo) {
         try {
           const userResponse = await axios.get('http://localhost:3000/users')
           const users = userResponse.data
           const user = users.find((u) => u.name === archivedChore.assignedTo)
-
           if (user) {
             await axios.patch(`http://localhost:3000/users/${user.id}`, {
               completedTasks: user.completedTasks + 1,
@@ -146,13 +143,10 @@ export const useChoreStore = defineStore('choreStore', () => {
     if (index !== -1) {
       const [restoredChore] = archivedChores.value.splice(index, 1)
       chores.value.push(restoredChore)
-
       const choreId = String(chore.id)
-
       try {
         const historyResponse = await axios.get('http://localhost:3000/history')
         const historyItem = historyResponse.data.find((h) => String(h.id) === choreId)
-
         if (historyItem) {
           await axios.delete(`http://localhost:3000/history/${historyItem.id}`)
         } else {
@@ -161,13 +155,11 @@ export const useChoreStore = defineStore('choreStore', () => {
       } catch (error) {
         console.error('Kunde inte ta bort sysslan från historiken:', error)
       }
-
       if (restoredChore.assignedTo) {
         try {
           const userResponse = await axios.get('http://localhost:3000/users')
           const users = userResponse.data
           const user = users.find((u) => u.name === restoredChore.assignedTo)
-
           if (user) {
             await axios.patch(`http://localhost:3000/users/${user.id}`, {
               completedTasks: Math.max(user.completedTasks - 1, 0),
@@ -188,13 +180,27 @@ export const useChoreStore = defineStore('choreStore', () => {
   const deleteChore = async (chore) => {
     const index = chores.value.findIndex((c) => c.id === chore.id)
     if (index !== -1) {
-      chores.value.splice(index, 1)
+      const [deletedChore] = chores.value.splice(index, 1)
+      deletedChores.value.push(deletedChore)
+      setTimeout(async () => {
+        const isStillDeleted = deletedChores.value.find((c) => c.id === chore.id)
+        if (isStillDeleted) {
+          try {
+            await axios.delete(`http://localhost:3000/chores/${chore.id}`)
+            deletedChores.value = deletedChores.value.filter((c) => c.id !== chore.id)
+          } catch (error) {
+            console.error('Kunde inte ta bort sysslan från chores:', error)
+          }
+        }
+      }, 5000)
+    }
+  }
 
-      try {
-        await axios.delete(`http://localhost:3000/chores/${chore.id}`)
-      } catch (error) {
-        console.error('Kunde inte ta bort sysslan från chores:', error)
-      }
+  const restoreDeletedChore = async (chore) => {
+    const index = deletedChores.value.findIndex((c) => c.id === chore.id)
+    if (index !== -1) {
+      const [restoredChore] = deletedChores.value.splice(index, 1)
+      chores.value.push(restoredChore)
     }
   }
 
@@ -278,6 +284,7 @@ export const useChoreStore = defineStore('choreStore', () => {
   return {
     chores,
     archivedChores,
+    deletedChores,
     addChoreDialog,
     openAddChoreDialog,
     closeAddChoreDialog,
@@ -292,6 +299,7 @@ export const useChoreStore = defineStore('choreStore', () => {
     archiveChore,
     undoArchiveChore,
     deleteChore,
+    restoreDeletedChore,
     history,
     fetchHistory,
     rewards,

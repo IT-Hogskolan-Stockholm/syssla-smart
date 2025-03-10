@@ -4,7 +4,7 @@ import { useChoreStore } from '../stores/ChoreStore'
 import RewardCard from '../components/RewardCard.vue'
 
 const store = useChoreStore()
-const points = ref(0)
+const points = ref(1)
 const rewardName = ref('')
 const description = ref('')
 const imgSrc = ref('')
@@ -108,7 +108,7 @@ const rules = {
                 </div>
                 <div class="counter-label">
                   <span class="ml-2">Poäng</span>
-                  <v-icon class="m1-1" color="yellow darken-2" size="18">mdi-star</v-icon>
+                  <v-icon class="m1-1" color="yellow darken-2" size="30">mdi-star</v-icon>
                 </div>
               </v-card-text>
 
@@ -158,6 +158,10 @@ const rules = {
 
 ::v-deep(.input-points .v-field__outline) {
   display: none !important;
+}
+
+.counter-label {
+  font-size: 1rem;
 }
 
 .point-arrow {
