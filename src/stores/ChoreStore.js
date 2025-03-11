@@ -272,7 +272,6 @@ export const useChoreStore = defineStore('choreStore', () => {
     } catch (error) {
       console.error('Kunde inte skapa belöningen:', error)
     }
-    addRewardDialog.value = false
   }
 
   const openAddRewardDialog = () => {

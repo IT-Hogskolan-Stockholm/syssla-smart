@@ -9,7 +9,9 @@ const rewardName = ref('')
 const description = ref('')
 const imgSrc = ref('')
 const form = ref(null)
-const openAddRewardDialog = store.openAddRewardDialog
+const openAddRewardDialog = () => {
+  store.addRewardDialog = true
+}
 
 const handleSubmit = async () => {
   if (!rewardName.value.trim()) {
