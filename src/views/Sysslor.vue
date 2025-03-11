@@ -144,7 +144,7 @@ const handleSubmit = async () => {
   }
 
   if (titleValid && dateValid) {
-    addChore(choreName.value, selectedDateDate.value, pointValue.value)
+    addChore(choreName.value, selectedDate.value, pointValue.value)
     closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null
