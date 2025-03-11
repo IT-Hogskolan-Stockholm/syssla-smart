@@ -1,0 +1,139 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Mamma",
+      "color": "#F48FB1",
+      "scoreValue": 3,
+      "completedTasks": 3
+    },
+    {
+      "id": "2",
+      "name": "Pappa",
+      "color": "#7CB342",
+      "scoreValue": 1,
+      "completedTasks": 1
+    },
+    {
+      "id": "3",
+      "name": "Algot",
+      "color": "#039BE5",
+      "scoreValue": 1,
+      "completedTasks": 1
+    },
+    {
+      "id": "4",
+      "name": "Sofia",
+      "color": "#EC407A",
+      "scoreValue": 1,
+      "completedTasks": 1
+    }
+  ],
+  "rewards": [
+    {
+      "id": "1",
+      "name": "Pizzakväll!",
+      "description": "En utekväll för hela familjen där vi går ut på La Luna och äter pizza!",
+      "pointsCost": 15,
+      "imgSrc": "https://raw.githubusercontent.com/IT-Hogskolan-Stockholm/syssla-smart/ee2a78374b0071a8f1ac941e9c318e752a6c6f3f/src/assets/pizza.jpeg"
+    }
+  ],
+  "history": [
+    {
+      "id": "1",
+      "title": "Tömma diskmaskinen",
+      "deadline": "2025-03-02",
+      "completedDate": "2025-03-02",
+      "assignedTo": "Mamma",
+      "isCompleted": true,
+      "pointValue": 1
+    },
+    {
+      "id": "2",
+      "title": "Städa badrummet",
+      "deadline": "2025-03-03",
+      "assignedTo": "Mamma",
+      "isCompleted": true,
+      "pointValue": 1,
+      "completedDate": "2025-03-03"
+    },
+    {
+      "id": "3",
+      "title": "Handla",
+      "deadline": "2025-03-01",
+      "assignedTo": "Pappa",
+      "isCompleted": true,
+      "pointValue": 1,
+      "completedDate": "2025-03-01"
+    },
+    {
+      "id": "4",
+      "title": "Rensa kylskåpet",
+      "deadline": "2025-02-28",
+      "assignedTo": "Sofia",
+      "isCompleted": true,
+      "pointValue": 1,
+      "completedDate": "2025-02-28"
+    },
+    {
+      "id": "5",
+      "title": "Dammsuga",
+      "deadline": "2025-02-27",
+      "assignedTo": "Algot",
+      "isCompleted": true,
+      "pointValue": 1,
+      "completedDate": "2025-02-27"
+    },
+    {
+      "id": "6",
+      "title": "Dammsuga",
+      "deadline": "2025-03-14",
+      "assignedTo": "Mamma",
+      "isCompleted": true,
+      "pointValue": 1,
+      "completedDate": "2025-03-05"
+    }
+  ],
+  "chores": [
+    {
+      "id": "7",
+      "title": "Diska",
+      "deadline": "2025-03-12",
+      "assignedTo": "Pappa",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": "8",
+      "title": "Skriva inköpslista",
+      "deadline": "2025-03-16",
+      "assignedTo": "Mamma",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": "9",
+      "title": "Rensa kylskåpet",
+      "deadline": "2025-03-12",
+      "assignedTo": "Sofia",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": "10",
+      "title": "Putsa fönster",
+      "deadline": "2025-03-14",
+      "assignedTo": "Algot",
+      "isCompleted": false,
+      "pointValue": 1
+    },
+    {
+      "id": "11",
+      "title": "Skura golv",
+      "deadline": "2025-03-06",
+      "assignedTo": "Sofia",
+      "isCompleted": false,
+      "pointValue": 1
+    }
+  ]
+}

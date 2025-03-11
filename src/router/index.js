@@ -1,16 +1,19 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Sysslor from "../views/Sysslor.vue";
-import Beloningar from "../views/Beloningar.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import Sysslor from '../views/Sysslor.vue'
+import Belöningar from '../views/Belöningar.vue'
+import Historik from '../views/Historik.vue'
+import Inställningar from '../views/Inställningar.vue'
 
 const routes = [
-  { path: "/", component: Sysslor },
-  { path: "/sysslor", component: Sysslor },
-  { path: "/beloningar", component: Beloningar },
-];
+  { path: '/', component: Sysslor },
+  { path: '/beloningar', component: Belöningar },
+  { path: '/historik', component: Historik },
+  { path: '/installningar', component: Inställningar }
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router
