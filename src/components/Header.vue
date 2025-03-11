@@ -1,8 +1,12 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { useUserStore } from '../stores/UserStore'
 import Sync from '../components/Sync.vue'
 
 const menuOpen = ref(false)
+const userStore = useUserStore()
+const currentUser = computed(() => userStore.users.find((user) => user.name === 'Algot'))
+
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
 }
@@ -13,6 +17,7 @@ const closeMenu = (event) => {
 }
 onMounted(() => {
   document.addEventListener('click', closeMenu)
+  userStore.fetchUsers()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('click', closeMenu)
@@ -26,15 +31,22 @@ onBeforeUnmount(() => {
     </router-link>
     <div id="user" class="d-flex">
       <img id="avatar" src="../assets/avatarIcon.svg" alt="User icon" @click.stop="toggleMenu" />
-      <v-overlay v-model="menuOpen" class="overlay" @click="menuOpen = false" style="z-index: 1"></v-overlay>
+      <v-overlay
+        v-model="menuOpen"
+        class="overlay"
+        @click="menuOpen = false"
+        style="z-index: 1"
+      ></v-overlay>
       <nav id="menu" :class="{ open: menuOpen }">
         <div id="menu-header" class="d-flex justify-space-between align-center">
           <img id="avatar-menu" src="../assets/avatarIcon.svg" alt="User icon" />
-          <v-icon class="black-text" size="40" color="black" @click="menuOpen = false">mdi-close</v-icon>
+          <v-icon class="black-text" size="40" color="black" @click="menuOpen = false"
+            >mdi-close</v-icon
+          >
         </div>
         <div id="user-score" class="d-flex align-center">
           <v-icon class="yellow-text star-icon" size="30" color="yellow">mdi-star</v-icon>
-          <span>12 poäng</span>
+          <span>{{ currentUser?.scoreValue || 0 }} poäng</span>
         </div>
         <div id="menu-content" class="d-flex-column">
           <div id="menu-category" class="py-5 d-flex align-center">
@@ -55,9 +67,7 @@ onBeforeUnmount(() => {
           </div>
           <div id="menu-category" class="py-5 d-flex align-center">
             <v-icon class="black-text" size="30" color="black">mdi-sync</v-icon>
-            <span>
-              <sync />
-            </span>
+            <Sync />
           </div>
           <div id="theme-toggle" class="py-5">
             <v-switch label="Tema" inset @click.stop></v-switch>
@@ -85,6 +95,7 @@ header {
     rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
   position: sticky;
   top: 0;
+  margin-bottom: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -141,10 +152,10 @@ header {
   color: green;
 }
 
-#menu-category .menu-links,
-#theme-toggle .v-label {
+#menu-category .menu-links {
   color: black !important;
   font-size: 1.25rem;
+  font-weight: 400;
   padding-left: 1rem;
 }
 
@@ -152,7 +163,7 @@ header {
   font-size: 1.25rem !important;
   color: black !important;
   padding-left: 1rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 #menu-footer {

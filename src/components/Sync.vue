@@ -37,16 +37,20 @@ const resetDialog = () => {
 <template>
   <v-dialog max-width="500" @update:model-value="resetDialog">
     <template v-slot:activator="{ props: activatorProps }">
-      <a v-bind="activatorProps"><span class="menu-links">Synka
-          hushåll</span></a>
+      <a v-bind="activatorProps" class="menu-links">Synka hushåll</a>
     </template>
 
     <template v-slot:default>
-      <v-card v-if="!loading && !synced" title="Ange Kod:" class="d-flex flex-column" style="
+      <v-card
+        v-if="!loading && !synced"
+        title="Ange Kod:"
+        class="d-flex flex-column"
+        style="
           min-height: 220px;
           border-radius: 20px;
           box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
-        ">
+        "
+      >
         <v-form @submit.prevent>
           <v-card-text>
             <v-text-field v-model="houseCode" :rules="rules" label="Hushållskod" />
@@ -54,25 +58,34 @@ const resetDialog = () => {
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn type="submit" @click="startLoading" :disabled="!houseCode || !codeValid">Synka
-              <v-icon>mdi-arrow-right</v-icon></v-btn>
+            <v-btn type="submit" @click="startLoading" :disabled="!houseCode || !codeValid"
+              >Synka <v-icon>mdi-arrow-right</v-icon></v-btn
+            >
           </v-card-actions>
         </v-form>
       </v-card>
 
-      <v-card v-else-if="loading" class="d-flex align-center justify-center" style="
+      <v-card
+        v-else-if="loading"
+        class="d-flex align-center justify-center"
+        style="
           min-height: 220px;
           border-radius: 20px;
           box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
-        ">
+        "
+      >
         <v-progress-circular indeterminate size="100" color="primary"></v-progress-circular>
       </v-card>
 
-      <v-card v-else class="d-flex flex-column" style="
+      <v-card
+        v-else
+        class="d-flex flex-column"
+        style="
           min-height: 220px;
           border-radius: 20px;
           box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
-        ">
+        "
+      >
         <v-card-text class="d-flex align-center justify-center" style="padding: 0">
           <v-icon size="100" color="rgb(151, 211, 149)">mdi-check-circle</v-icon>
         </v-card-text>
@@ -90,6 +103,7 @@ const resetDialog = () => {
   color: black !important;
   font-size: 1.25rem;
   padding-left: 1rem;
-  cursor: pointer
+  font-weight: 400;
+  cursor: pointer;
 }
 </style>

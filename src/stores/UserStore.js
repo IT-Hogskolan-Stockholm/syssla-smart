@@ -1,36 +1,24 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
 import { ref } from 'vue'
 
 export const useUserStore = defineStore('userStore', () => {
-  const users = ref([
-    {
-      id: 1,
-      name: 'Mamma',
-      color: '#F48FB1',
-      scoreValue: 1,
-      completedTasks: 0
-    },
-    {
-      id: 2,
-      name: 'Pappa',
-      color: '#7CB342',
-      scoreValue: 1,
-      completedTasks: 0
-    },
-    {
-      id: 3,
-      name: 'Algot',
-      color: '#039BE5',
-      scoreValue: 12,
-      completedTasks: 0
-    },
-    {
-      id: 4,
-      name: 'Sofia',
-      color: '#EC407A',
-      scoreValue: 1,
-      completedTasks: 0
+  const users = ref([])
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users')
+      users.value = Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error('Fel vid hämtning av användare:', error)
     }
-  ])
-  return { users }
+  }
+
+  const assignUser = (choreId, userName) => {
+    const chore = chores.find((chore) => chore.id === choreId)
+    if (chore) {
+      chore.assignedTo = userName
+    }
+  }
+  return { users, fetchUsers, assignUser }
 })
