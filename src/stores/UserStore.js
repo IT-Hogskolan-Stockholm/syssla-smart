@@ -14,11 +14,5 @@ export const useUserStore = defineStore('userStore', () => {
     }
   }
 
-  const assignUser = (choreId, userName) => {
-    const chore = chores.find((chore) => chore.id === choreId)
-    if (chore) {
-      chore.assignedTo = userName
-    }
-  }
-  return { users, fetchUsers, assignUser }
+  return { users, fetchUsers }
 })
