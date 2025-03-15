@@ -10,6 +10,8 @@ const archivedChores = computed(() => store.archivedChores)
 const archiveChore = store.archiveChore
 const undoArchiveChore = store.undoArchiveChore
 const deleteChore = store.deleteChore
+const restoreDeletedChore = store.restoreDeletedChore
+const deletedChores = computed(() => store.deletedChores)
 const addChoreDialog = computed({
   get: () => store.addChoreDialog,
   set: (value) => (store.addChoreDialog = value)
@@ -144,7 +146,7 @@ const handleSubmit = async () => {
   }
 
   if (titleValid && dateValid) {
-    addChore(choreName.value, selectedDateDate.value, pointValue.value)
+    addChore(choreName.value, selectedDate.value, pointValue.value)
     closeAddChoreDialog()
     form.value.reset()
     selectedDate.value = null

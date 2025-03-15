@@ -17,7 +17,7 @@
     {
       "id": "3",
       "name": "Algot",
-      "color": "#039BE5",
+      "color": "#E9C89F",
       "scoreValue": 1,
       "completedTasks": 1
     },
@@ -43,10 +43,10 @@
       "id": "1",
       "title": "Tömma diskmaskinen",
       "deadline": "2025-03-02",
-      "completedDate": "2025-03-02",
       "assignedTo": "Mamma",
       "isCompleted": true,
-      "pointValue": 1
+      "pointValue": 1,
+      "completedDate": "2025-03-02"
     },
     {
       "id": "2",

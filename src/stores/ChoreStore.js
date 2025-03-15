@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { ref, computed } from 'vue'
+import { useUserStore } from './UserStore'
 
 export const useChoreStore = defineStore('choreStore', () => {
   const chores = ref([])
@@ -12,6 +13,8 @@ export const useChoreStore = defineStore('choreStore', () => {
   const assignUserDialog = ref(false)
   const editingChore = ref(null)
   const addRewardDialog = ref(false)
+  const userStore = useUserStore()
+
   const sortedChores = computed(() => {
     return Array.isArray(chores.value)
       ? [...chores.value].sort((a, b) => {
@@ -109,6 +112,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       } catch (error) {
         console.error('Kunde inte arkivera sysslan i historiken:', error)
       }
+      await userStore.fetchUsers()
       if (archivedChore.assignedTo) {
         try {
           const userResponse = await axios.get('http://localhost:3000/users')
@@ -119,6 +123,7 @@ export const useChoreStore = defineStore('choreStore', () => {
               completedTasks: user.completedTasks + 1,
               scoreValue: user.scoreValue + archivedChore.pointValue
             })
+            await userStore.fetchUsers()
           }
         } catch (error) {
           console.error('Kunde inte uppdatera användaren:', error)
@@ -155,6 +160,7 @@ export const useChoreStore = defineStore('choreStore', () => {
       } catch (error) {
         console.error('Kunde inte ta bort sysslan från historiken:', error)
       }
+      await userStore.fetchUsers()
       if (restoredChore.assignedTo) {
         try {
           const userResponse = await axios.get('http://localhost:3000/users')
@@ -165,6 +171,7 @@ export const useChoreStore = defineStore('choreStore', () => {
               completedTasks: Math.max(user.completedTasks - 1, 0),
               scoreValue: Math.max(user.scoreValue - restoredChore.pointValue, 0)
             })
+            await userStore.fetchUsers()
           } else {
             console.warn(`Användaren ${restoredChore.assignedTo} hittades inte!`)
           }

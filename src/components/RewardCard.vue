@@ -20,10 +20,10 @@ const getRewardImage = (reward) => {
 </script>
 
 <template>
-  <v-container>
+  <v-container class="py-0">
     <v-row>
       <v-col v-for="reward in rewards" :key="reward.id" cols="12">
-        <v-card class="mx-auto my-4" max-width="400" elevation="4" rounded="lg">
+        <v-card class="mx-auto mt-0 mb-4" max-width="400" elevation="4" rounded="lg">
           <v-img :src="getRewardImage(reward)" alt="Belöning Bild" height="200px" cover></v-img>
           <v-card-title class="title-font text-center">
             {{ reward.name }}

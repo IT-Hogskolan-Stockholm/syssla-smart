@@ -9,6 +9,9 @@ const rewardName = ref('')
 const description = ref('')
 const imgSrc = ref('')
 const form = ref(null)
+const openAddRewardDialog = () => {
+  store.addRewardDialog = true
+}
 
 const handleSubmit = async () => {
   if (!rewardName.value.trim()) {
@@ -23,8 +26,7 @@ const handleSubmit = async () => {
     description.value = ''
     points.value = 0
     imgSrc.value = ''
-
-    store.closeAddRewardDialog()
+    store.addRewardDialog = false
   } catch (error) {
     console.error('Något gick fel vid skapandet av belöningen:', error)
   }
@@ -36,10 +38,6 @@ const increasePoints = () => {
 
 const decreasePoints = () => {
   if (points.value < 100 && points.value > 0) points.value--
-}
-
-const openAddRewardDialog = () => {
-  store.addRewardDialog = true
 }
 
 const rules = {
@@ -133,7 +131,6 @@ const rules = {
                 ></v-text-field>
               </v-card-text>
 
-              <!--Lägg till button section-->
               <v-card-actions class="justify-center flex-grow-0 px-4 pt-4 pb-2">
                 <v-btn
                   color="green"
@@ -156,7 +153,6 @@ const rules = {
 <style scoped>
 .rewards-container {
   width: 100%;
-  margin-top: 2rem;
 }
 
 .input-points {
